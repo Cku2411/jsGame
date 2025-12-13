@@ -49,6 +49,8 @@ const ghosts = new Set();
 
 let pacman;
 
+const directions = ["U", "D", "L", "R"];
+
 window.onload = function () {
   board = this.document.getElementById("board");
   board.height = boardHeight;
@@ -59,6 +61,12 @@ window.onload = function () {
   loadMap();
   // start the game
   update();
+  // randoem direction evertime game load for ghost
+  for (let ghost of ghosts.values()) {
+    const newDirection =
+      directions[Math.floor(Math.random() * directions.length)];
+    ghost.updateDirection(newDirection);
+  }
 
   // event listener
   document.addEventListener("keyup", movePacman);
@@ -100,6 +108,41 @@ function draw() {
 function move() {
   pacman.x += pacman.velocityX;
   pacman.y += pacman.velocityY;
+  // check wall collisions
+  for (let wall of walls.values()) {
+    if (collision(pacman, wall)) {
+      pacman.x -= pacman.velocityX;
+      pacman.y -= pacman.velocityY;
+      break;
+    }
+  }
+
+  // ghost move
+  for (let ghost of ghosts.values()) {
+    if (
+      ghost.y == tileSize * 9 &&
+      ghost.direction != "U" &&
+      ghost.direction != "D"
+    ) {
+      ghost.updateDirection("U");
+    }
+    ghost.x += ghost.velocityX;
+    ghost.y += ghost.velocityY;
+    // check ghost collison
+    for (let wall of walls.values()) {
+      if (
+        collision(ghost, wall) ||
+        ghost.x <= 0 ||
+        ghost.x + ghost.width >= boardWidth
+      ) {
+        ghost.x -= ghost.velocityX;
+        ghost.y -= ghost.velocityY;
+        const newDirection =
+          directions[Math.floor(Math.random() * directions.length)];
+        ghost.updateDirection(newDirection);
+      }
+    }
+  }
 }
 
 function movePacman(e) {
@@ -111,6 +154,16 @@ function movePacman(e) {
     pacman.updateDirection("L");
   } else if (e.code == "ArrowRight" || e.code == "KeyD") {
     pacman.updateDirection("R");
+  }
+  // update pacman image
+  if (pacman.direction == "U") {
+    pacman.image = pacmanUpImage;
+  } else if (pacman.direction == "D") {
+    pacman.image = pacmanDownImage;
+  } else if (pacman.direction == "R") {
+    pacman.image = pacmanRightImage;
+  } else if (pacman.direction == "L") {
+    pacman.image = pacmanLeftImage;
   }
 }
 
@@ -187,6 +240,16 @@ function loadMap() {
   }
 }
 
+// check va cham giua 2 rectangle
+function collision(a, b) {
+  return (
+    a.x < b.x + b.width &&
+    a.x + a.width > b.x &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y
+  );
+}
+
 class Block {
   constructor(image, x, y, width, height) {
     this.image = image;
@@ -204,8 +267,22 @@ class Block {
   }
 
   updateDirection(direction) {
+    const preventDirection = this.direction;
     this.direction = direction;
     this.updateVelocity();
+    this.x += this.velocityX;
+    this.y += this.velocityY;
+
+    for (let wall of walls.values()) {
+      // this refer to this block class (pacman, ghost..)
+      if (collision(this, wall)) {
+        this.x -= this.velocityX;
+        this.y -= this.velocityY;
+        this.direction = preventDirection;
+        this.updateVelocity();
+        return;
+      }
+    }
   }
 
   updateVelocity() {
