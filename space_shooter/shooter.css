@@ -1,11 +1,21 @@
 body {
+  /* display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0; */
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Ẩn scroll */
+  height: 100%;
+  width: 100%;
+}
+
+#board {
   background: url("/img/bg.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  margin: 0;
+  display: block;
 }
