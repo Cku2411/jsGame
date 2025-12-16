@@ -49,9 +49,14 @@ window.onload = function () {
   context = board.getContext("2d");
 
   //   //   draw initial dinosaur
-  //   context.fillStyle = "green";
-  //   context.fillRect(dino.x, dino.y, dino.width, dino.height);
+  loadImage();
 
+  this.requestAnimationFrame(update);
+  this.setInterval(placeCatus, 1000);
+  document.addEventListener("keydown", moveDino);
+};
+
+function loadImage() {
   dinoImg = new Image();
   dinoImg.src = "./img/dino.png";
   dinoImg.onload = function () {
@@ -66,21 +71,19 @@ window.onload = function () {
 
   catus3Img = new Image();
   catus3Img.src = "./img/big-cactus3.png";
-  //   catus1Img.onload = function () {
-  //     context.drawImage(catus1Img, catusX, catusY, catus1Width, catusHeight);
-  //   };
-
-  this.requestAnimationFrame(update);
-  this.setInterval(placeCatus, 1000);
-  document.addEventListener("keydown", moveDino);
-};
+}
 
 function update() {
   requestAnimationFrame(update);
-  context.clearRect(0, 0, boardWidth, boardheight);
   if (gameOver) {
+    context.fillStyle = "black";
+    context.font = "30px courier";
+    context.fillText("GAME OVER", 260, 100);
+    context.font = "20px courier";
+    context.fillText("Press SPACE to Restart", 220, 140);
     return;
   }
+  context.clearRect(0, 0, boardWidth, boardheight);
   //   dino
   velocityY += gravity;
   dino.y = Math.min(dino.y + velocityY, dinoY);
@@ -91,7 +94,20 @@ function update() {
     const catus = catusArray[index];
     catus.x += velocityX;
     context.drawImage(catus.img, catus.x, catus.y, catus.width, catus.height);
+    // check collision
+    if (detectCollision(dino, catus)) {
+      gameOver = true;
+      dinoImg.src = "./img/dino-dead.png";
+      dinoImg.onload = function () {
+        context.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+      };
+    }
   }
+  // score
+  context.fillStyle = "black";
+  context.font = "20px courier";
+  score++;
+  context.fillText(score, 5, 20);
 }
 
 function placeCatus() {
@@ -125,8 +141,28 @@ function placeCatus() {
   }
 }
 
+function resetGame() {
+  gameOver = false;
+  // reset dino
+  dino.x = dinoX;
+  dino.y = dinoY;
+  velocityY = 0;
+
+  // reset cactus
+  catusArray = [];
+
+  // reset score
+  score = 0;
+
+  // reset image
+  dinoImg.src = "./img/dino.png";
+}
+
 function moveDino(e) {
   if (gameOver) {
+    if (e.code == "Space") {
+      resetGame();
+    }
     return;
   }
 
@@ -136,5 +172,16 @@ function moveDino(e) {
   ) {
     // jump
     velocityY = -10;
+  } else if (e.code == "ArrowDown" && dino.y == dinoY) {
+    dinoImg.src = "./img/dino-duck1.png";
   }
+}
+
+function detectCollision(a, b) {
+  return (
+    a.x < b.x + b.width && //canh trai A < canh phai B
+    a.x + a.width > b.x && // canh phai A > canh trai B
+    a.y < b.y + b.height && // canh tren A < canh duoi B
+    a.y + a.height > b.y // canh duoi A > canh tren B
+  );
 }
