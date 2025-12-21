@@ -1,0 +1,29 @@
+function animate() {
+  // clear the canvasn
+  ctx3.clearRect(0, 0, canvas.width, canvas.height);
+  frogger.draw();
+  frogger.update();
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+// even lisner
+window.addEventListener("keydown", function (e) {
+  // add keys array
+  keys[e.code] = true;
+  if (
+    e.code === "ArrowUp" ||
+    e.code === "ArrowDown" ||
+    e.code === "ArrowLeft" ||
+    e.code === "ArrowRight"
+  ) {
+    frogger.jump();
+  }
+  console.log({ keys });
+});
+
+window.addEventListener("keyup", function (e) {
+  delete keys[e.code];
+  frogger.moving = false;
+});
