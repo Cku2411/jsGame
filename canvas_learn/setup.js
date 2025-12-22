@@ -39,9 +39,25 @@ const logsArray = [];
 
 // images
 const backgroud_lvl2 = new Image();
-
 backgroud_lvl2.src = "./img/background_lvl2.png";
 
 // grass
 const grass = new Image();
 grass.src = "./img/grass.png";
+
+// colisions
+const collisions = new Image();
+collisions.src = "./img/collisions.png";
+
+// log
+const log = new Image();
+log.src = "./img/log.png";
+
+// turtle
+const turtle = new Image();
+turtle.src = "./img/turtles.png";
+// cars
+const car = new Image();
+car.src = "./img/cars.png";
+
+let numberOfCars = 30;

@@ -6,11 +6,31 @@ class Obstacle {
     this.height = height;
     this.speed = speed;
     this.type = type;
+    this.frameX = 0;
+    this.frameY = 0;
+    this.randomise = Math.floor(Math.random() * 30 * 30);
   }
 
   draw() {
-    ctx1.fillStyle = "blue";
-    ctx1.fillRect(this.x, this.y, this.width, this.height);
+    if (this.type === "turtle") {
+      if (this.frameX >= 1) this.frameX = 0;
+      else this.frameX++;
+
+      ctx1.fillRect(this.x, this.y, this.width, this.height);
+      ctx1.drawImage(
+        turtle,
+        this.frameX * 70,
+        this.frameY * 70,
+        70,
+        70,
+        this.x,
+        this.y,
+        this.width,
+        this.height
+      );
+    }
+    // ctx1.fillStyle = "blue";
+    // ctx1.fillRect(this.x, this.y, this.width, this.height);
   }
   update() {
     // update speed for obstacle
@@ -84,5 +104,24 @@ function handleObstacles() {
   for (let index = 0; index < logsArray.length; index++) {
     logsArray[index].draw();
     logsArray[index].update();
+  }
+
+  //   collision with car
+  for (let index = 0; index < carsArray.length; index++) {
+    if (collision(frogger, carsArray[index])) {
+      ctx4.drawImage(
+        collisions,
+        0,
+        100,
+        100,
+        100,
+        frogger.x,
+        frogger.y,
+        50,
+        50
+      );
+
+      resetGame();
+    }
   }
 }
