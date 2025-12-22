@@ -60,4 +60,4 @@ turtle.src = "./img/turtles.png";
 const car = new Image();
 car.src = "./img/cars.png";
 
-let numberOfCars = 30;
+let numberOfCars = 3;

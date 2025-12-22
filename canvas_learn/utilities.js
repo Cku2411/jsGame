@@ -14,6 +14,7 @@ function animate() {
   handleParticles();
   handleRipples();
   handleScore();
+  frame++;
   requestAnimationFrame(animate);
 }
 
