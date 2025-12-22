@@ -1,8 +1,10 @@
 function animate() {
   // clear the canvasn
   ctx3.clearRect(0, 0, canvas.width, canvas.height);
+  ctx1.clearRect(0, 0, canvas.width, canvas.height);
   frogger.draw();
   frogger.update();
+  handleObstacles();
   requestAnimationFrame(animate);
 }
 
@@ -27,3 +29,11 @@ window.addEventListener("keyup", function (e) {
   delete keys[e.code];
   frogger.moving = false;
 });
+
+function scored() {
+  score++;
+  gameSpeed += 0.05;
+  // reset frog
+  frogger.x = canvas.width / 2 - frogger.width / 2;
+  frogger.y = canvas.height - frogger.height - 40;
+}

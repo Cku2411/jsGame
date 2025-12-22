@@ -15,7 +15,22 @@ class Frogger {
     if (keys["ArrowUp"] && !this.moving) {
       this.y -= grid;
       this.moving = true;
-    }
+    } else if (keys["ArrowDown"] && !this.moving) {
+      if (this.y < canvas.height - this.height * 2) {
+        this.y += grid;
+        this.moving = true;
+      }
+    } else if (keys["ArrowLeft"] && !this.moving) {
+      if (this.x > this.width) {
+        this.x -= grid;
+        this.moving = true;
+      }
+    } else if (keys["ArrowRight"] && !this.moving) {
+      if (this.x < canvas.width - this.width * 2) {
+        this.x += grid;
+        this.moving = true;
+      }
+    } else if (this.y < 0) scored();
   }
 
   draw() {
