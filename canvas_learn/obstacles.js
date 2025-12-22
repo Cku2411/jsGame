@@ -44,6 +44,33 @@ function initObstacle() {
       new Obstacle(x, canvas.height - grid * 3 - 20, grid * 2, grid, -2, "car")
     );
   }
+
+  // lane 3
+  for (let i = 0; i < 2; i++) {
+    // put new car padding 350
+    let x = i * 400;
+    carsArray.push(
+      new Obstacle(x, canvas.height - grid * 4 - 20, grid * 2, grid, 2, "car")
+    );
+  }
+
+  // lane 4 turtle
+  for (let i = 0; i < 2; i++) {
+    // put new car padding 350
+    let x = i * 400;
+    logsArray.push(
+      new Obstacle(x, canvas.height - grid * 5 - 20, grid * 2, grid, -2, "log")
+    );
+  }
+
+  // lane 5 turtle
+  for (let i = 0; i < 2; i++) {
+    // put new car padding 350
+    let x = i * 200;
+    logsArray.push(
+      new Obstacle(x, canvas.height - grid * 6 - 20, grid, grid, 1, "turtle")
+    );
+  }
 }
 
 initObstacle();
@@ -52,5 +79,10 @@ function handleObstacles() {
   for (let index = 0; index < carsArray.length; index++) {
     carsArray[index].draw();
     carsArray[index].update();
+  }
+
+  for (let index = 0; index < logsArray.length; index++) {
+    logsArray[index].draw();
+    logsArray[index].update();
   }
 }

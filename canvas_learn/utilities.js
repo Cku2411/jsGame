@@ -2,9 +2,12 @@ function animate() {
   // clear the canvasn
   ctx3.clearRect(0, 0, canvas.width, canvas.height);
   ctx1.clearRect(0, 0, canvas.width, canvas.height);
+  ctx1.drawImage(backgroud_lvl2, 0, 0, canvas.width, canvas.height);
+  ctx4.drawImage(grass, 0, 0, canvas.width, canvas.height);
   frogger.draw();
   frogger.update();
-  handleObstacles();
+  // handleObstacles();
+  handleParticles();
   requestAnimationFrame(animate);
 }
 
