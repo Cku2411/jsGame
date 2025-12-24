@@ -36,7 +36,7 @@ class Obstacle {
     } else if (this.type == "car") {
       ctx1.drawImage(
         car,
-        0,
+        this.frameX * this.width,
         this.carType * this.height,
         grid * 2,
         grid,
@@ -56,6 +56,7 @@ class Obstacle {
         this.x = 0 - this.width;
       }
     } else if (this.x < 0 - this.width) {
+      this.frameX = 1;
       this.x = canvas.width;
     }
   }
@@ -136,6 +137,24 @@ function handleObstacles() {
         50
       );
 
+      resetGame();
+    }
+  }
+  //  collision with logs/turles
+  if (frogger.y < 250 && frogger.y > 100) {
+    // water boudary
+    safe = false;
+    for (let i = 0; i < logsArray.length; i++) {
+      if (collision(frogger, logsArray[i])) {
+        frogger.x += logsArray[i].speed;
+        safe = true;
+      }
+    }
+
+    if (!safe) {
+      for (let i = 0; i < 30; i++) {
+        ripplesArray.unshift(new Particle(frogger.x, frogger.y));
+      }
       resetGame();
     }
   }
