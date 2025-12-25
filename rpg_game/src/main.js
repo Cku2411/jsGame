@@ -1,11 +1,12 @@
 import { GameLoop } from "./gameLoop";
-import { gridCells } from "./helpers/grid";
+import { gridCells, isSpaceFree } from "./helpers/grid";
 import { Directions, Input } from "./input";
 import { resources } from "./resoures";
 import { Sprite } from "./sprite";
 import "./style.css";
 import { Vector2 } from "./vector2";
 import { moveTowards } from "./helpers/moveToward";
+import { walls } from "./levels/level1";
 
 const canvas = document.querySelector("#game-canvas");
 const ctx = canvas.getContext("2d");
@@ -38,15 +39,19 @@ const shadow = new Sprite({
 
 const input = new Input();
 
-const update = () => {
+const update = (delta) => {
   const distance = moveTowards(hero, heroDestinationPosition, 1);
+
+  // check if distance < 1px=> move hero to this
   const hasArrived = distance <= 1;
   // Attempt to move again if the hero is at his position
 
   if (hasArrived) {
     tryMove();
   }
-  return;
+
+  // work on hero animation
+  hero.step(delta);
   // Update entities in the game
 };
 
@@ -77,12 +82,13 @@ const tryMove = () => {
   } else if (input.direction === Directions.RIGHT) {
     // hero.position.x += 1;
     nextX += gridSize;
-
     hero.frame = 3;
   }
-
-  heroDestinationPosition.x = nextX;
-  heroDestinationPosition.y = nextY;
+  // check if that space is free
+  if (isSpaceFree(walls, nextX, nextY)) {
+    heroDestinationPosition.x = nextX;
+    heroDestinationPosition.y = nextY;
+  }
 };
 
 const draw = () => {
