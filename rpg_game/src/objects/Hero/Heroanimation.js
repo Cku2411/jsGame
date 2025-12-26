@@ -3,8 +3,8 @@ const makeWalkingFrames = (rootFrame = 0) => {
     duration: 400,
     frames: [
       {
-        time: 0,
-        frame: rootFrame + 1,
+        time: 0, //time start
+        frame: rootFrame + 1, //frame show
       },
       {
         time: 100,
