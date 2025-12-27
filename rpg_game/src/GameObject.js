@@ -1,3 +1,4 @@
+import { events } from "./Event";
 import { Vector2 } from "./vector2";
 
 export class GameObject {
@@ -5,6 +6,7 @@ export class GameObject {
     this.position = position ?? new Vector2(0, 0);
     this.children = [];
     this.drawOffset = new Vector2(0, 0);
+    this.parent = null;
   }
 
   //   First entry point of the loop
@@ -35,12 +37,22 @@ export class GameObject {
 
   drawImage(ctx, drawPosX, drawPosY) {}
 
+  destroy() {
+    this.children.forEach((child) => {
+      child.destroy();
+    });
+
+    this.parent.removeChild(this);
+  }
+
   // Other GameObject are nestable inside this one.
   addChild(gameObject) {
+    gameObject.parent = this;
     this.children.push(gameObject);
   }
 
   removeChild(gameObject) {
+    events.unsubcribe(gameObject);
     // remove gameObject
     this.children = this.children.filter((game) => {
       return gameObject !== game;

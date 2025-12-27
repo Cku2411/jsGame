@@ -10,6 +10,7 @@ import { gridCells } from "../../helpers/grid";
 import { Animations } from "../../animation";
 import { walls } from "../../levels/level1";
 import {
+  PICK_UP_DOWN,
   STAND_DOWN,
   STAND_LEFT,
   STAND_RIGHT,
@@ -52,16 +53,28 @@ export class Hero extends GameObject {
         standLeft: new FrameIndexPattern(STAND_LEFT),
         standUp: new FrameIndexPattern(STAND_UP),
         standDown: new FrameIndexPattern(STAND_DOWN),
+        pickUpDown: new FrameIndexPattern(PICK_UP_DOWN),
       }),
     });
 
+    this.addChild(this.body);
     this.facingDirection = Directions.DOWN;
     this.heroDestinationPosition = this.position.duplicate();
+    this.itemPickupTime = 0;
+    this.itemPickupShell = null;
 
-    this.addChild(this.body);
+    // listen to the event
+    events.on("HERO_PICKS_UP_ITEM", this, (data) => {
+      this.onPickUpItem(data);
+    });
   }
 
   step(delta, root) {
+    if (this.itemPickupTime > 0) {
+      this.workOnItemPickup(delta);
+      return;
+    }
+
     const distance = moveTowards(this, this.heroDestinationPosition, 1);
 
     const hasArrived = distance <= 1;
@@ -123,6 +136,34 @@ export class Hero extends GameObject {
     if (isSpaceFree(walls, nextX, nextY)) {
       this.heroDestinationPosition.x = nextX;
       this.heroDestinationPosition.y = nextY;
+    }
+  }
+
+  onPickUpItem({ image, position }) {
+    // when pickup item, change destination to this
+    this.heroDestinationPosition = position.duplicate();
+
+    // start the pickup animation
+    this.itemPickupTime = 500;
+
+    this.itemPickupShell = new GameObject({});
+    this.itemPickupShell.addChild(
+      new Sprite({
+        resource: image,
+        position: new Vector2(0, -18),
+      })
+    );
+
+    // add Child to the heroes
+    this.addChild(this.itemPickupShell);
+  }
+
+  workOnItemPickup(delta) {
+    this.itemPickupTime -= delta;
+    this.body.animations.play("pickUpDown");
+
+    if (this.itemPickupTime <= 0) {
+      this.itemPickupShell.destroy();
     }
   }
 }

@@ -9,6 +9,8 @@ import { Hero } from "./objects/Hero/Hero";
 import { Input } from "./input";
 import { events } from "./Event";
 import { Camera } from "./Camera";
+import { Gold, Rod } from "./objects/Rod/rod";
+import { Inventory } from "./objects/inventory/Inventory";
 
 // =======START=========
 // Garbbing the canvas to draw to
@@ -23,7 +25,7 @@ const skySprite = new Sprite({
   frameSize: new Vector2(320, 180),
 });
 
-mainScene.addChild(skySprite);
+// mainScene.addChild(skySprite);
 
 const groundSprite = new Sprite({
   resource: resources.images.ground,
@@ -37,6 +39,14 @@ mainScene.addChild(hero);
 
 const camera = new Camera();
 mainScene.addChild(camera);
+
+const rod = new Rod(gridCells(7), gridCells(6));
+mainScene.addChild(rod);
+
+const gold = new Gold(gridCells(5), gridCells(7));
+mainScene.addChild(gold);
+
+const inventory = new Inventory();
 // Adding input class to the mainScene
 
 mainScene.input = new Input();
@@ -50,6 +60,7 @@ const draw = () => {
   // clear anything stale
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  skySprite.drawImage(ctx, 0, 0);
   // save the current satte (for camera offset)
   ctx.save();
 
@@ -60,8 +71,10 @@ const draw = () => {
   mainScene.draw(ctx, 0, 0);
 
   // Restore to original state
-
   ctx.restore();
+
+  // Draw anything above the game world
+  inventory.draw(ctx, 0, 0);
 };
 
 // Start the game

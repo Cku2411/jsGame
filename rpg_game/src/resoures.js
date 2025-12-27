@@ -6,6 +6,8 @@ class Resources {
       ground: "/ground.png",
       hero: "/hero-sheet.png",
       shadow: "/shadow.png",
+      rod: "/rod.png",
+      gold: "/goldbars.png",
     };
     // a bucket to keep all of our images
     this.images = {};

@@ -7,23 +7,25 @@ class Resources {
       hero: "/sprites/hero-sheet.png",
       shadow: "/sprites/shadow.png",
       rod: "/sprites/rod.png",
+      gold: "/goldbars.png",
+      coin: "/coin.png",
     };
 
     // A bucket to keep all of our images
     this.images = {};
 
     // Load each image
-    Object.keys(this.toLoad).forEach(key => {
+    Object.keys(this.toLoad).forEach((key) => {
       const img = new Image();
       img.src = this.toLoad[key];
       this.images[key] = {
         image: img,
-        isLoaded: false
-      }
+        isLoaded: false,
+      };
       img.onload = () => {
         this.images[key].isLoaded = true;
-      }
-    })
+      };
+    });
   }
 }
 
