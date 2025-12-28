@@ -7,6 +7,7 @@ export class GameObject {
     this.children = [];
     this.drawOffset = new Vector2(0, 0);
     this.parent = null;
+    this.hasReadyBeenCalled = false;
   }
 
   //   First entry point of the loop
@@ -14,9 +15,18 @@ export class GameObject {
     // Call updates on all children first
     this.children.forEach((child) => child.stepEntry(delta, root));
 
+    // Call ready on the first
+    if (!this.hasReadyBeenCalled) {
+      this.hasReadyBeenCalled = true;
+      this.ready();
+    }
+
     // Call any implemented Step code
     this.step(delta, root);
   }
+
+  // Call before the 1st steps
+  ready() {}
 
   //   called once every frame
   step(_delta) {

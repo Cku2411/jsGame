@@ -16,20 +16,19 @@ export class Rod extends GameObject {
     });
 
     this.addChild(rodSprite);
+  }
 
-    // get heroposition
+  ready() {
+    console.log("ROD is READY");
+
+    //
     events.on("HERO_POSITION", this, (pos) => {
-      // detect overlap
-
       const roundedHeroX = Math.round(pos.x);
       const roundedHeroY = Math.round(pos.y);
-
       if (
         roundedHeroX === this.position.x &&
         roundedHeroY === this.position.y
       ) {
-        // overlap
-        console.log("OVERLAP");
         this.onCollideWithHero();
       }
     });

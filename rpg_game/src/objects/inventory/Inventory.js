@@ -28,8 +28,6 @@ export class Inventory extends GameObject {
         id: this.nextId,
         image: data.image,
       });
-      console.log({ data });
-      console.log("thisIemt: ", this.items);
 
       this.renderInventory();
     });
@@ -51,5 +49,10 @@ export class Inventory extends GameObject {
 
       this.addChild(sprite);
     });
+  }
+
+  removeFromInventory() {
+    this.items = this.items.filter((item) => item.id !== id);
+    this.renderInventory();
   }
 }

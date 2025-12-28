@@ -8,6 +8,12 @@ class Resources {
       shadow: "/shadow.png",
       rod: "/rod.png",
       gold: "/goldbars.png",
+
+      // outdoor
+      exit: "/exit.png",
+      // Cave
+      caveGround: "/cave-ground.png",
+      cave: "/cave.png",
     };
     // a bucket to keep all of our images
     this.images = {};

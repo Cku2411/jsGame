@@ -11,6 +11,8 @@ import { events } from "./Event";
 import { Camera } from "./Camera";
 import { Gold, Rod } from "./objects/Rod/rod";
 import { Inventory } from "./objects/inventory/Inventory";
+import { Exit } from "./objects/Exit/exit";
+import { Main } from "./objects/Main/Main";
 
 // =======START=========
 // Garbbing the canvas to draw to
@@ -18,7 +20,7 @@ const canvas = document.querySelector("#game-canvas");
 const ctx = canvas.getContext("2d");
 
 // Etablish the root scene
-const mainScene = new GameObject({ position: new Vector2(0, 0) });
+const mainScene = new Main();
 
 const skySprite = new Sprite({
   resource: resources.images.sky,
@@ -43,13 +45,20 @@ mainScene.addChild(camera);
 const rod = new Rod(gridCells(7), gridCells(6));
 mainScene.addChild(rod);
 
-const gold = new Gold(gridCells(5), gridCells(7));
+const gold = new Gold(gridCells(8), gridCells(7));
 mainScene.addChild(gold);
+
+const exit = new Exit(gridCells(6), gridCells(3));
+mainScene.addChild(exit);
 
 const inventory = new Inventory();
 // Adding input class to the mainScene
 
 mainScene.input = new Input();
+
+events.on("HERO_EXITS", mainScene, () => {
+  console.log("CHANGE THE MAP");
+});
 
 // Etablish update and draw loop
 const update = (delta) => {
@@ -60,7 +69,7 @@ const draw = () => {
   // clear anything stale
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  skySprite.drawImage(ctx, 0, 0);
+  mainScene.drawBackground(ctx);
   // save the current satte (for camera offset)
   ctx.save();
 
@@ -74,7 +83,7 @@ const draw = () => {
   ctx.restore();
 
   // Draw anything above the game world
-  inventory.draw(ctx, 0, 0);
+  mainScene.drawForeground(ctx);
 };
 
 // Start the game

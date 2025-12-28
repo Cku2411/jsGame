@@ -1,6 +1,23 @@
+import { Level } from "../objects/Level/Level";
+import { resources } from "../resoures";
+import { Sprite } from "../sprite";
+import { Vector2 } from "../vector2";
+
+export class OutdoorLeve1 extends Level {
+  constructor() {
+    super({});
+    this.background = new Sprite({
+      resource: resources.images.sky,
+      frameSize: new Vector2(320, 180),
+    });
+  }
+}
+
 export const walls = new Set();
 
 walls.add(`64,48`); //tree
+
+walls.add(`64,64`); //squares
 walls.add(`64,80`);
 walls.add(`80,64`);
 walls.add(`80,80`);
