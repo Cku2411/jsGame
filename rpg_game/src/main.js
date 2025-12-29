@@ -18,15 +18,16 @@ const mainScene = new Main({
 });
 
 mainScene.setLevel(new OutdoorLevel1());
+mainScene.setLevel(new CaveLevel1());
 
 // Adding input class to the mainScene
 
 mainScene.input = new Input();
 
-events.on("HERO_EXITS", mainScene, () => {
-  console.log("CHANGE THE MAP");
-  mainScene.setLevel(new CaveLevel1());
-});
+// events.on("HERO_EXITS", mainScene, () => {
+//   console.log("CHANGE THE MAP");
+//   mainScene.setLevel(new CaveLevel1());
+// });
 
 // Etablish update and draw loop
 const update = (delta) => {
