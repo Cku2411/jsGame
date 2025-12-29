@@ -6,9 +6,7 @@ import { FrameIndexPattern } from "../../FrameIndexPattern";
 import { isSpaceFree } from "../../helpers/grid";
 import { moveTowards } from "../../helpers/moveToward";
 import { resources } from "../../resoures";
-import { gridCells } from "../../helpers/grid";
 import { Animations } from "../../animation";
-import { walls } from "../../levels/level1";
 import {
   PICK_UP_DOWN,
   STAND_DOWN,
@@ -133,7 +131,7 @@ export class Hero extends GameObject {
 
     this.facingDirection = input.direction ?? this.facingDirection;
     // check if that space is free
-    if (isSpaceFree(walls, nextX, nextY)) {
+    if (isSpaceFree(root.level?.walls, nextX, nextY)) {
       this.heroDestinationPosition.x = nextX;
       this.heroDestinationPosition.y = nextY;
     }

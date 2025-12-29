@@ -12,13 +12,25 @@ export class Main extends GameObject {
     this.inventory = new Inventory();
   }
 
-  setLevel(newLevelInstance) {}
+  setLevel(newLevelInstance) {
+    // remove current level and add new one
+    if (this.level) {
+      this.level.destroy();
+    }
+
+    this.level = newLevelInstance;
+    this.addChild(this.level);
+  }
 
   drawBackground(ctx) {
     this.level?.background.drawImage(ctx, 0, 0);
   }
 
   drawForeground(ctx) {
-    this.inventory.draw(ctx, this.inventory.x, this.inventory.y);
+    this.inventory.draw(
+      ctx,
+      this.inventory.position.x,
+      this.inventory.position.y
+    );
   }
 }
