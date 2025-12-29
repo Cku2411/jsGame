@@ -2,7 +2,6 @@ import "./style.css";
 import { GameLoop } from "./gameLoop";
 import { Vector2 } from "./vector2";
 import { Input } from "./input";
-import { events } from "./Event";
 import { Main } from "./objects/Main/Main";
 import { OutdoorLevel1 } from "./levels/level1";
 import { CaveLevel1 } from "./levels/CaveLevel1";

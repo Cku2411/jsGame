@@ -14,6 +14,12 @@ class Resources {
       // Cave
       caveGround: "/cave-ground.png",
       cave: "/cave.png",
+      // NPC
+      knight: "/knight.png",
+      knight2: "/hero-baba.png",
+
+      // HUD
+      textBox: "/text-box.png",
     };
     // a bucket to keep all of our images
     this.images = {};

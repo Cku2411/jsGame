@@ -9,6 +9,7 @@ import { Gold } from "../objects/Rod/rod";
 import { gridCells } from "../helpers/grid";
 import { events } from "../Event";
 import { OutdoorLevel1 } from "./level1";
+import { Npc } from "../objects/NPC/Npc";
 
 // =================
 
@@ -35,8 +36,10 @@ export class CaveLevel1 extends Level {
 
     this.heroStartPosition = params.heroPosition ?? DEFAULT_HERO_POSITION;
     const hero = new Hero(this.heroStartPosition.x, this.heroStartPosition.y);
-
     this.addChild(hero);
+
+    const npc = new Npc(gridCells(9), gridCells(5));
+    this.addChild(npc);
 
     const rod = new Rod(gridCells(7), gridCells(6));
     this.addChild(rod);

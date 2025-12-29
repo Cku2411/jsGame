@@ -131,7 +131,13 @@ export class Hero extends GameObject {
 
     this.facingDirection = input.direction ?? this.facingDirection;
     // check if that space is free
-    if (isSpaceFree(root.level?.walls, nextX, nextY)) {
+
+    const spaceIsFree = isSpaceFree(root.level?.walls, nextX, nextY);
+    const solidBodyAtSpace = this.parent.children.find(
+      (c) => c.isSolid && c.position.x === nextX && c.position.y === nextY
+    );
+
+    if (spaceIsFree && !solidBodyAtSpace) {
       this.heroDestinationPosition.x = nextX;
       this.heroDestinationPosition.y = nextY;
     }
