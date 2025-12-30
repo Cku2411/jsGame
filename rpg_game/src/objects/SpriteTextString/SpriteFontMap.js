@@ -28,9 +28,24 @@ width.set("?", 4);
 width.set("`", 2);
 
 // Optional: fallback function
-function getCharacterWidth(char) {
+export function getCharacterWidth(char) {
   return width.get(char) ?? DEFAULT_WIDTH;
 }
 
 // FRAMES
 const frameMap = new Map();
+const fontRows = [
+  "abcdefghijklmnopqrstuvwxyz", // hàng chữ thường
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZ", // hàng chữ hoa
+  "0123456789", // hàng số
+  ".!- ,?`", // hàng dấu câu
+]
+  .join("")
+  .split("")
+  .forEach((char, index) => {
+    frameMap.set(char, index);
+  });
+
+export const getCharacterFrame = (char) => {
+  return frameMap.get(char) ?? 0;
+};

@@ -47,7 +47,7 @@ const draw = () => {
   }
 
   // Draw objects in the mounted scene
-  mainScene.draw(ctx, 0, 0);
+  mainScene.drawObjects(ctx, 0, 0);
 
   // Restore to original state
   ctx.restore();
