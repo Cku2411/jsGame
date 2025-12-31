@@ -2,6 +2,7 @@ import { Camera } from "../../Camera";
 import { events } from "../../Event";
 import { GameObject } from "../../GameObject";
 import { Input } from "../../input";
+import { storyFlag } from "../../StoryFlag";
 import { Inventory } from "../inventory/Inventory";
 import { SpriteTextString } from "../SpriteTextString/SpriteTextString";
 import { TextBox } from "../TextBox/TextBox";
@@ -28,10 +29,22 @@ export class Main extends GameObject {
       if (typeof withObject.getContent == "function") {
         const content = withObject.getContent();
 
+        if (!content) {
+          return;
+        }
+
+        // Potentially add story flag
+        if (content.addsFlag) {
+          console.log("ADD Flag", content.addsFlag);
+
+          storyFlag.add(content.addsFlag);
+        }
+
         const textBox = new SpriteTextString({
           string: content.string,
           portraitFrame: content.portraitFrame,
         });
+
         this.addChild(textBox);
 
         events.emit("START_TEXT_BOX");

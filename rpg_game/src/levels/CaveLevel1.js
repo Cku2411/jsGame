@@ -10,6 +10,7 @@ import { gridCells } from "../helpers/grid";
 import { events } from "../Event";
 import { OutdoorLevel1 } from "./level1";
 import { Npc } from "../objects/NPC/Npc";
+import { TALK_TO_NPC_A, TALK_TO_NPC_B } from "../StoryFlag";
 
 // =================
 
@@ -38,14 +39,36 @@ export class CaveLevel1 extends Level {
     const hero = new Hero(this.heroStartPosition.x, this.heroStartPosition.y);
     this.addChild(hero);
 
-    const npc1 = new Npc(gridCells(5), gridCells(5), "I am the first NPC!!");
+    const npc1 = new Npc(gridCells(5), gridCells(5), {
+      content: [
+        {
+          string: "I am the first NPC!!",
+          requires: [TALK_TO_NPC_A], //any string in this list must exit in
+          bypass: [],
+          addsFlag: TALK_TO_NPC_A,
+        },
+        {
+          string: "this is what I want to say",
+          requires: [], //any string in this list must exit in
+          bypass: [],
+          addsFlag: TALK_TO_NPC_A,
+        },
+      ],
+      portraitFrame: 1,
+    });
     this.addChild(npc1);
 
-    const npc2 = new Npc(
-      gridCells(8),
-      gridCells(7),
-      "I am the second NPC! New Year Eve fireworks celebrations, according to the city’s Traffic Police Department."
-    );
+    const npc2 = new Npc(gridCells(8), gridCells(7), {
+      content: [
+        {
+          string: "Oh, go right and turn left to find something",
+          requires: [], //any string in this list must exit in
+          bypass: [],
+          addsFlag: TALK_TO_NPC_B,
+        },
+      ],
+      portraitFrame: 1,
+    });
     this.addChild(npc2);
 
     const rod = new Rod(gridCells(7), gridCells(6));

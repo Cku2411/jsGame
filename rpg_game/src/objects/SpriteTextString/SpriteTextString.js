@@ -39,10 +39,17 @@ export class SpriteTextString extends GameObject {
       return { wordWidth, chars };
     });
 
-    // Creat background for text
+    // Create background for text
     this.backdrop = new Sprite({
       resource: resources.images.textBox,
       frameSize: new Vector2(256, 64),
+    });
+
+    // Create a portrait
+    this.portrait = new Sprite({
+      resource: resources.images.portraits,
+      hFrames: 4,
+      frame: config.portraitFrame ?? 0,
     });
 
     // TypeWritter
@@ -87,9 +94,12 @@ export class SpriteTextString extends GameObject {
     // Draw the backdrop
     this.backdrop.drawImage(ctx, drawPosX, drawPosY);
 
+    // Draw the portrait
+    this.portrait.drawImage(ctx, drawPosX + 6, drawPosY + 6);
+
     // COnfiguration options
-    const PADDING_LEFT = 7;
-    const PADDING_TOP = 7;
+    const PADDING_LEFT = 27;
+    const PADDING_TOP = 9;
     const LINE_WIDTH_MAX = 240;
     const LINE_VERTICAL_HEIGHT = 14;
 
