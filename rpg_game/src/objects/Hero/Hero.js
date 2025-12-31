@@ -1,5 +1,5 @@
 import { GameObject } from "../../GameObject";
-import { Directions } from "../../input";
+import { Directions, Input } from "../../input";
 import { Vector2 } from "../../vector2";
 import { Sprite } from "../../sprite";
 import { FrameIndexPattern } from "../../FrameIndexPattern";
@@ -60,6 +60,7 @@ export class Hero extends GameObject {
     this.heroDestinationPosition = this.position.duplicate();
     this.itemPickupTime = 0;
     this.itemPickupShell = null;
+    this.isLocked = false;
 
     // listen to the event
     events.on("HERO_PICKS_UP_ITEM", this, (data) => {
@@ -67,14 +68,48 @@ export class Hero extends GameObject {
     });
   }
 
+  ready() {
+    events.on("START_TEXT_BOX", this, () => {
+      this.isLocked = true;
+    });
+
+    events.on("END_TEXT_BOX", this, () => {
+      this.isLocked = false;
+    });
+  }
+
   step(delta, root) {
+    // Don't do anything when hero is locked
+
+    if (this.isLocked) {
+      return;
+    }
+
     if (this.itemPickupTime > 0) {
       this.workOnItemPickup(delta);
       return;
     }
 
-    const distance = moveTowards(this, this.heroDestinationPosition, 1);
+    // Check for input
+    /** @type {Input} */
+    const input = root.input;
+    if (input?.getActionJustPressed("Space")) {
+      // Look for an object at the next space (according to where hero facing)
+      const objAtPosition = this.parent.children.find((child) => {
+        return child.position.matches(
+          this.position.toNeighbor(this.facingDirection)
+        );
+      });
 
+      console.log({ objAtPosition });
+
+      if (objAtPosition) {
+        console.log("ACTIONS");
+        events.emit("HERO_REQUESTS_ACTION", objAtPosition);
+      }
+    }
+
+    const distance = moveTowards(this, this.heroDestinationPosition, 1);
     const hasArrived = distance <= 1;
     if (hasArrived) {
       this.tryMove(root);

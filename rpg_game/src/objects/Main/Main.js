@@ -18,15 +18,30 @@ export class Main extends GameObject {
     const inventory = new Inventory();
     this.addChild(inventory);
 
-    setTimeout(() => {
-      const textBox = new SpriteTextString(
-        "Hello from the other sides! from the other sides from the other sides"
-      );
-      this.addChild(textBox);
-    }, 300);
-
+    // Change level handlers
     events.on("CHANGE_LEVEL", this, (newLevelInstance) => {
       this.setLevel(newLevelInstance);
+    });
+
+    // Launch Text Box handler
+    events.on("HERO_REQUESTS_ACTION", this, (withObject) => {
+      if (typeof withObject.getContent == "function") {
+        const content = withObject.getContent();
+
+        const textBox = new SpriteTextString({
+          string: content.string,
+          portraitFrame: content.portraitFrame,
+        });
+        this.addChild(textBox);
+
+        events.emit("START_TEXT_BOX");
+        // event.on() return an ID and event.off(id) to unsubcribe
+        const endingSub = events.on("END_TEXT_BOX", this, () => {
+          // remove child from parent
+          textBox.destroy();
+          events.off(endingSub);
+        });
+      }
     });
   }
 

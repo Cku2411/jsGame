@@ -4,12 +4,14 @@ import { Sprite } from "../../sprite";
 import { resources } from "../../resoures";
 
 export class Npc extends GameObject {
-  constructor(x, y) {
+  constructor(x, y, textContent) {
     super({
       position: new Vector2(x, y),
     });
 
     this.isSolid = true;
+    // say somethign
+    this.textContent = textContent;
 
     // Shadown under feet
     const shadow = new Sprite({
@@ -30,5 +32,13 @@ export class Npc extends GameObject {
     });
 
     this.addChild(body);
+  }
+
+  getContent() {
+    // we have method here maybe want to expand storyflag logi
+    return {
+      string: this.textContent,
+      portraitFrame: 1,
+    };
   }
 }

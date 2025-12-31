@@ -4,6 +4,7 @@ class Events {
 
   //   emit event (something happened)
   emit(eventName, value) {
+    // run callback
     this.callbacks.forEach((stored) => {
       if (stored.eventName === eventName) {
         stored.callback(value);

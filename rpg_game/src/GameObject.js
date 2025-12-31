@@ -31,7 +31,7 @@ export class GameObject {
   ready() {}
 
   //   called once every frame
-  step(_delta) {
+  step(_delta, root) {
     // ...
   }
 

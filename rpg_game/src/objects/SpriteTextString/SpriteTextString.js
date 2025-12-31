@@ -1,17 +1,19 @@
+import { events } from "../../Event";
 import { GameObject } from "../../GameObject";
+import { Input } from "../../input";
 import { resources } from "../../resoures";
 import { Sprite } from "../../sprite";
 import { Vector2 } from "../../vector2";
 import { getCharacterFrame, getCharacterWidth } from "./SpriteFontMap";
 
 export class SpriteTextString extends GameObject {
-  constructor(str) {
+  constructor(config = {}) {
     super({ position: new Vector2(32, 108) });
 
     this.drawLayer = "HUD";
-    const content = str ?? "Default text";
 
     // Create an array of words
+    const content = config.string ?? "Default text";
     this.words = content.split(" ").map((word) => {
       // We need to know how wide this word is
       let wordWidth = 0;
@@ -45,11 +47,31 @@ export class SpriteTextString extends GameObject {
 
     // TypeWritter
     this.showingIndex = 0; // index character we are showing in effect
+    this.finalIndex = this.words.reduce(
+      (acc, word) => acc + word.chars.length,
+      0
+    );
     this.textSpeed = 30; // How manytime should pass before showing next character
     this.timeUntilNextShow = this.textSpeed;
   }
 
-  step(delta) {
+  step(delta, root) {
+    // Listen for user input
+    /**
+     * @type {Input}
+     */
+    const input = root.input;
+
+    if (input?.getActionJustPressed("Space")) {
+      if (this.showingIndex < this.finalIndex) {
+        // Skip
+        this.showingIndex = this.finalIndex;
+        return;
+      }
+      // Done with textBox
+
+      events.emit("END_TEXT_BOX");
+    }
     // count..
     this.timeUntilNextShow -= delta;
     if (this.timeUntilNextShow <= 0) {
