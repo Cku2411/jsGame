@@ -11,7 +11,7 @@ class StoryFlag {
     return scenarios.find((senario) => {
       // Disqualify when any bypas flags present
       const bypassFlags = senario.bypass ?? [];
-      for (let i = 0; i < bypassFlags; i++) {
+      for (let i = 0; i < bypassFlags.length; i++) {
         const thisFlag = bypassFlags[i];
         if (this.flags.has(thisFlag)) {
           return false;
@@ -20,7 +20,7 @@ class StoryFlag {
 
       //   Disqualify if we find a missing required flag
       const requiredFlags = senario.requires ?? [];
-      for (let i = 0; i < requiredFlags; i++) {
+      for (let i = 0; i < requiredFlags.length; i++) {
         const thisFlag = requiredFlags[i];
         if (!this.flags.has(thisFlag)) {
           return false;
