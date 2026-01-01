@@ -1,4 +1,8 @@
 import "./style.css";
+import { floorCollisions, platFormCollisions } from "./data/collisions";
+import { Sprite } from "./classes/Sprite";
+import { Player } from "./classes/Player";
+import { CollisionBlock } from "./classes/CollisionsBlock";
 
 // ===========
 
@@ -9,50 +13,51 @@ canvas.width = 1024;
 canvas.height = 576;
 const gravity = 0.5;
 
-class Sprite {
-  constructor({ position, imageSrc }) {
-    this.position = position;
-    this.image = new Image();
-    this.image.src = imageSrc;
-  }
+const scaledCanvas = {
+  width: canvas.width / 4,
+  height: canvas.height / 4,
+};
 
-  draw() {
-    if (!this.image) return;
-    ctx.drawImage(this.image, this.position.x, this.position.y);
-  }
+// ====COLLISIONS BLOCK=====
+// create 2D floor, chia nho bg thanh cac array nho, moi array gom 36 phan tu
+const collisionBlocks = [];
+const floorCollisions2D = [];
+const platFormCollisions2D = [];
 
-  update() {
-    this.draw();
-  }
+for (let i = 0; i < floorCollisions.length; i += 36) {
+  floorCollisions2D.push(floorCollisions.slice(i, i + 36));
 }
 
-class Player {
-  constructor(position) {
-    this.position = position;
-    this.velocity = { x: 0, y: 1 };
-    this.height = 100;
-  }
+for (let i = 0; i < platFormCollisions.length; i += 36) {
+  platFormCollisions2D.push(platFormCollisions.slice(i, i + 36));
+}
 
-  draw() {
-    ctx.fillStyle = "red";
-    ctx.fillRect(this.position.x, this.position.y, 100, this.height);
-  }
-  update() {
-    this.draw();
-    this.position.x += this.velocity.x;
-    this.position.y += this.velocity.y;
-    // chekc colision with canvas
-    if (this.position.y + this.height + this.velocity.y < canvas.height) {
-      this.velocity.y += gravity;
-    } else {
-      // stop falling
-      this.velocity.y = 0;
+floorCollisions2D.forEach((row, yIndex) => {
+  row.forEach((symbol, xIndex) => {
+    if (symbol === 202) {
+      collisionBlocks.push(
+        new CollisionBlock({ position: { x: xIndex * 16, y: yIndex * 16 } })
+      );
     }
-  }
-}
+  });
+});
+
+platFormCollisions2D.forEach((row, yIndex) => {
+  row.forEach((symbol, xIndex) => {
+    if (symbol === 202) {
+      collisionBlocks.push(
+        new CollisionBlock({ position: { x: xIndex * 16, y: yIndex * 16 } })
+      );
+    }
+  });
+});
+
+console.log({ collisionBlocks });
+
+// =================
 
 const player = new Player({ x: 10, y: 0 });
-const player2 = new Player({ x: 300, y: 10 });
+// const player2 = new Player({ x: 300, y: 10 });
 
 const keys = {
   d: {
@@ -80,9 +85,21 @@ function animate() {
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   window.requestAnimationFrame(animate);
 
-  background.update();
-  player.update();
-  player2.update();
+  ctx.save();
+  // - Thay đổi hệ tọa độ của canvas: mọi thứ vẽ sau đó sẽ được phóng to 4 lần theo trục X và 4 lần theo trục Y.
+  ctx.scale(4, 4);
+
+  // dịch hệ tọa độ y lên (dùng -)
+  ctx.translate(0, -(background.image.height - scaledCanvas.height));
+  background.update(ctx);
+  // - Sau khi gọi, mọi thao tác vẽ tiếp theo sẽ quay về hệ tọa độ gốc (không còn scale 4×4 nữa).
+  // render collisionBlock
+  collisionBlocks.forEach((block) => {
+    block.update(ctx);
+  });
+  ctx.restore();
+
+  player.update(ctx, gravity, canvas);
 
   player.velocity.x = 0;
   if (keys.d.pressed) {
