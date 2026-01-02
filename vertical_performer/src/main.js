@@ -42,25 +42,52 @@ floorCollisions2D.forEach((row, yIndex) => {
   });
 });
 
-// platFormCollisions2D.forEach((row, yIndex) => {
-//   row.forEach((symbol, xIndex) => {
-//     if (symbol === 202) {
-//       collisionBlocks.push(
-//         new CollisionBlock({ position: { x: xIndex * 16, y: yIndex * 16 } })
-//       );
-//     }
-//   });
-// });
+platFormCollisions2D.forEach((row, yIndex) => {
+  row.forEach((symbol, xIndex) => {
+    if (symbol === 202) {
+      collisionBlocks.push(
+        new CollisionBlock({ position: { x: xIndex * 16, y: yIndex * 16 } })
+      );
+    }
+  });
+});
 
 console.log({ collisionBlocks });
 
 // =================
 
 const player = new Player({
-  position: { x: 100, y: 0 },
+  position: { x: 100, y: 300 },
   collisionBlocks,
   imageSrc: "/warrior/Idle.png",
   frameRate: 8,
+  animations: {
+    Idle: {
+      imageSrc: "/warrior/Idle.png",
+      frameRate: 8,
+    },
+
+    Run: {
+      imageSrc: "/warrior/Run.png",
+      frameRate: 8,
+      frameBuffer: 10,
+    },
+    RunLeft: {
+      imageSrc: "/warrior/RunLeft.png",
+      frameRate: 8,
+      frameBuffer: 10,
+    },
+    Jump: {
+      imageSrc: "/warrior/Jump.png",
+      frameRate: 2,
+      frameBuffer: 3,
+    },
+    Fall: {
+      imageSrc: "/warrior/Fall.png",
+      frameRate: 2,
+      frameBuffer: 3,
+    },
+  },
 });
 // const player2 = new Player({ x: 300, y: 10 });
 
@@ -107,8 +134,18 @@ function animate() {
 
   player.velocity.x = 0;
   if (keys.d.pressed) {
-    player.velocity.x = 5;
-  } else if (keys.a.pressed) player.velocity.x = -5;
+    player.switchSprite("Run");
+    player.velocity.x = 1;
+  } else if (keys.a.pressed) {
+    player.switchSprite("RunLeft");
+    player.velocity.x = -1;
+  } else if (player.velocity.y == 0) {
+    player.switchSprite("Idle");
+  }
+
+  // if (player.velocity.y < 0) {
+  //   player.switchSprite("Jump");
+  // } else if (player.velocity.y > 0) player.switchSprite("Fall");
 
   ctx.restore();
 }
@@ -129,7 +166,7 @@ window.addEventListener("keydown", (event) => {
 
     case "w":
       keys.w.pressed = true;
-      player.velocity.y = -8;
+      player.velocity.y = -6;
       break;
   }
 });
