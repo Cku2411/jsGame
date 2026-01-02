@@ -11,7 +11,7 @@ const ctx = canvas.getContext("2d");
 
 canvas.width = 1024;
 canvas.height = 576;
-const gravity = 0.5;
+const gravity = 0.3;
 
 const scaledCanvas = {
   width: canvas.width / 4,
@@ -42,21 +42,26 @@ floorCollisions2D.forEach((row, yIndex) => {
   });
 });
 
-platFormCollisions2D.forEach((row, yIndex) => {
-  row.forEach((symbol, xIndex) => {
-    if (symbol === 202) {
-      collisionBlocks.push(
-        new CollisionBlock({ position: { x: xIndex * 16, y: yIndex * 16 } })
-      );
-    }
-  });
-});
+// platFormCollisions2D.forEach((row, yIndex) => {
+//   row.forEach((symbol, xIndex) => {
+//     if (symbol === 202) {
+//       collisionBlocks.push(
+//         new CollisionBlock({ position: { x: xIndex * 16, y: yIndex * 16 } })
+//       );
+//     }
+//   });
+// });
 
 console.log({ collisionBlocks });
 
 // =================
 
-const player = new Player({ x: 10, y: 0 });
+const player = new Player({
+  position: { x: 100, y: 0 },
+  collisionBlocks,
+  imageSrc: "/warrior/Idle.png",
+  frameRate: 8,
+});
 // const player2 = new Player({ x: 300, y: 10 });
 
 const keys = {
@@ -86,7 +91,7 @@ function animate() {
   window.requestAnimationFrame(animate);
 
   ctx.save();
-  // - Thay đổi hệ tọa độ của canvas: mọi thứ vẽ sau đó sẽ được phóng to 4 lần theo trục X và 4 lần theo trục Y.
+  // // - Thay đổi hệ tọa độ của canvas: mọi thứ vẽ sau đó sẽ được phóng to 4 lần theo trục X và 4 lần theo trục Y.
   ctx.scale(4, 4);
 
   // dịch hệ tọa độ y lên (dùng -)
@@ -97,7 +102,6 @@ function animate() {
   collisionBlocks.forEach((block) => {
     block.update(ctx);
   });
-  ctx.restore();
 
   player.update(ctx, gravity, canvas);
 
@@ -105,6 +109,8 @@ function animate() {
   if (keys.d.pressed) {
     player.velocity.x = 5;
   } else if (keys.a.pressed) player.velocity.x = -5;
+
+  ctx.restore();
 }
 
 animate();
@@ -123,7 +129,7 @@ window.addEventListener("keydown", (event) => {
 
     case "w":
       keys.w.pressed = true;
-      player.velocity.y = -20;
+      player.velocity.y = -8;
       break;
   }
 });
