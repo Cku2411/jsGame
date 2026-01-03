@@ -1,10 +1,11 @@
-import { isCollision } from "../util";
+import { isCollision, isPlatFormCollision } from "../util";
 import { Sprite } from "./Sprite";
 
 export class Player extends Sprite {
   constructor({
     position,
     collisionBlocks,
+    platFormCollisionBlocks,
     imageSrc,
     animations,
     frameRate,
@@ -23,8 +24,13 @@ export class Player extends Sprite {
       height: 27,
     };
 
+    this.prevY = this.hitbox.position.y;
+
     this.collisionBlocks = collisionBlocks;
+    this.platFormCollisionBlocks = platFormCollisionBlocks;
     this.animations = animations;
+    // store the last direction
+    this.lastDirection = "right";
 
     for (let key in this.animations) {
       const image = new Image();
@@ -49,27 +55,33 @@ export class Player extends Sprite {
   // }
 
   switchSprite(key) {
-    if (this.image === this.animations[key].image) return;
+    if (this.image === this.animations[key].image || !this.loaded) return;
+    // reset currentFrame
+    this.currentFrame = 0;
     this.image = this.animations[key].image;
     this.frameBuffer = this.animations[key].frameBuffer;
+    this.frameRate = this.animations[key].frameRate;
   }
 
   update(ctx, gravity, canvas) {
     this.updateFrame();
     this.updateHitbox();
+    this.prevY = this.hitbox.position.y;
 
-    // draw out the images
-    ctx.fillStyle = "rgba(0,255,0,0.2";
-    ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+    // // ===
+    // // draw out the rectangel
+    // ctx.fillStyle = "rgba(0,255,0,0.2";
+    // ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
 
-    // draw out the hitBox
-    ctx.fillStyle = "rgba(255,0,0,0.2";
-    ctx.fillRect(
-      this.hitbox.position.x,
-      this.hitbox.position.y,
-      this.hitbox.width,
-      this.hitbox.height
-    );
+    // // draw out the hitBox
+    // ctx.fillStyle = "rgba(255,0,0,0.2";
+    // ctx.fillRect(
+    //   this.hitbox.position.x,
+    //   this.hitbox.position.y,
+    //   this.hitbox.width,
+    //   this.hitbox.height
+    // );
+    // // ===
 
     this.draw(ctx);
     this.position.x += this.velocity.x;
@@ -157,6 +169,28 @@ export class Player extends Sprite {
 
           this.position.y =
             collisionBlock.position.y + collisionBlock.height - offset + 0.01;
+          break;
+        }
+      }
+    }
+
+    // PlatFormCollisionBlock
+    for (let i = 0; i < this.platFormCollisionBlocks.length; i++) {
+      const platFormCollisionBlock = this.platFormCollisionBlocks[i];
+
+      if (
+        isPlatFormCollision({
+          object1: this.hitbox,
+          object2: platFormCollisionBlock,
+          prevY: this.prevY,
+        })
+      ) {
+        // if detect collision, stop velocity
+        if (this.velocity.y > 0) {
+          this.velocity.y = 0;
+          const offset =
+            this.hitbox.position.y - this.position.y + this.hitbox.height;
+          this.position.y = platFormCollisionBlock.position.y - offset - 0.01;
           break;
         }
       }

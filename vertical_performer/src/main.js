@@ -21,6 +21,7 @@ const scaledCanvas = {
 // ====COLLISIONS BLOCK=====
 // create 2D floor, chia nho bg thanh cac array nho, moi array gom 36 phan tu
 const collisionBlocks = [];
+const platFormCollisionBlocks = [];
 const floorCollisions2D = [];
 const platFormCollisions2D = [];
 
@@ -45,8 +46,11 @@ floorCollisions2D.forEach((row, yIndex) => {
 platFormCollisions2D.forEach((row, yIndex) => {
   row.forEach((symbol, xIndex) => {
     if (symbol === 202) {
-      collisionBlocks.push(
-        new CollisionBlock({ position: { x: xIndex * 16, y: yIndex * 16 } })
+      platFormCollisionBlocks.push(
+        new CollisionBlock({
+          position: { x: xIndex * 16, y: yIndex * 16 },
+          height: 4,
+        })
       );
     }
   });
@@ -59,12 +63,19 @@ console.log({ collisionBlocks });
 const player = new Player({
   position: { x: 100, y: 300 },
   collisionBlocks,
+  platFormCollisionBlocks,
   imageSrc: "/warrior/Idle.png",
   frameRate: 8,
   animations: {
     Idle: {
       imageSrc: "/warrior/Idle.png",
       frameRate: 8,
+      frameBuffer: 5,
+    },
+    IdleLeft: {
+      imageSrc: "/warrior/IdleLeft.png",
+      frameRate: 8,
+      frameBuffer: 5,
     },
 
     Run: {
@@ -82,8 +93,18 @@ const player = new Player({
       frameRate: 2,
       frameBuffer: 3,
     },
+    JumpLeft: {
+      imageSrc: "/warrior/JumpLeft.png",
+      frameRate: 2,
+      frameBuffer: 3,
+    },
     Fall: {
       imageSrc: "/warrior/Fall.png",
+      frameRate: 2,
+      frameBuffer: 3,
+    },
+    FallLeft: {
+      imageSrc: "/warrior/FallLeft.png",
       frameRate: 2,
       frameBuffer: 3,
     },
@@ -125,27 +146,43 @@ function animate() {
   ctx.translate(0, -(background.image.height - scaledCanvas.height));
   background.update(ctx);
   // - Sau khi gọi, mọi thao tác vẽ tiếp theo sẽ quay về hệ tọa độ gốc (không còn scale 4×4 nữa).
+
   // render collisionBlock
   collisionBlocks.forEach((block) => {
     block.update(ctx);
   });
 
+  platFormCollisionBlocks.forEach((block) => {
+    block.update(ctx);
+  });
   player.update(ctx, gravity, canvas);
 
   player.velocity.x = 0;
   if (keys.d.pressed) {
     player.switchSprite("Run");
     player.velocity.x = 1;
+    player.lastDirection = "right";
   } else if (keys.a.pressed) {
     player.switchSprite("RunLeft");
     player.velocity.x = -1;
+    player.lastDirection = "left";
   } else if (player.velocity.y == 0) {
-    player.switchSprite("Idle");
+    if (player.lastDirection == "right") {
+      player.switchSprite("Idle");
+    } else {
+      player.switchSprite("IdleLeft");
+    }
   }
 
-  // if (player.velocity.y < 0) {
-  //   player.switchSprite("Jump");
-  // } else if (player.velocity.y > 0) player.switchSprite("Fall");
+  if (player.velocity.y < 0) {
+    if (player.lastDirection == "left") {
+      player.switchSprite("JumpLeft");
+    } else player.switchSprite("Jump");
+  } else if (player.velocity.y > gravity) {
+    if (player.lastDirection === "right") {
+      player.switchSprite("Fall");
+    } else player.switchSprite("FallLeft");
+  }
 
   ctx.restore();
 }

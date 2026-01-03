@@ -9,10 +9,12 @@ export class Sprite {
     this.frameRate = frameRate;
     this.scale = scale;
     this.position = position;
+    this.loaded = false;
     this.image = new Image();
     this.image.onload = () => {
       this.width = (this.image.width / this.frameRate) * this.scale;
       this.height = this.image.height * this.scale;
+      this.loaded = true;
     };
     this.image.src = imageSrc;
     this.currentFrame = 0;
