@@ -132,6 +132,14 @@ const background = new Sprite({
   imageSrc: "/background.png",
 });
 
+const backgroundImageHieght = 432;
+const camera = {
+  position: {
+    x: 0,
+    y: -(backgroundImageHieght - scaledCanvas.height),
+  },
+};
+
 function animate() {
   // ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = "white";
@@ -139,22 +147,24 @@ function animate() {
   window.requestAnimationFrame(animate);
 
   ctx.save();
-  // // - Thay đổi hệ tọa độ của canvas: mọi thứ vẽ sau đó sẽ được phóng to 4 lần theo trục X và 4 lần theo trục Y.
+  // - Thay đổi hệ tọa độ của canvas: mọi thứ vẽ sau đó sẽ được phóng to 4 lần theo trục X và 4 lần theo trục Y.
   ctx.scale(4, 4);
 
   // dịch hệ tọa độ y lên (dùng -)
-  ctx.translate(0, -(background.image.height - scaledCanvas.height));
+  ctx.translate(camera.position.x, camera.position.y);
+
   background.update(ctx);
   // - Sau khi gọi, mọi thao tác vẽ tiếp theo sẽ quay về hệ tọa độ gốc (không còn scale 4×4 nữa).
 
-  // render collisionBlock
-  collisionBlocks.forEach((block) => {
-    block.update(ctx);
-  });
+  // // render collisionBlock
+  // collisionBlocks.forEach((block) => {
+  //   block.update(ctx);
+  // });
 
-  platFormCollisionBlocks.forEach((block) => {
-    block.update(ctx);
-  });
+  // platFormCollisionBlocks.forEach((block) => {
+  //   block.update(ctx);
+  // });
+
   player.update(ctx, gravity, canvas);
 
   player.velocity.x = 0;
@@ -162,10 +172,14 @@ function animate() {
     player.switchSprite("Run");
     player.velocity.x = 1;
     player.lastDirection = "right";
+    player.shouldPanCameraToTheLeft({ camera, canvas });
   } else if (keys.a.pressed) {
     player.switchSprite("RunLeft");
     player.velocity.x = -1;
     player.lastDirection = "left";
+    console.log(player.position.x);
+
+    player.shouldPanCameraToTheRight({ camera, canvas });
   } else if (player.velocity.y == 0) {
     if (player.lastDirection == "right") {
       player.switchSprite("Idle");
@@ -175,10 +189,12 @@ function animate() {
   }
 
   if (player.velocity.y < 0) {
+    player.shouldPanCameraUp({ camera, canvas });
     if (player.lastDirection == "left") {
       player.switchSprite("JumpLeft");
     } else player.switchSprite("Jump");
   } else if (player.velocity.y > gravity) {
+    player.shouldPanCameraDown({ camera, canvas });
     if (player.lastDirection === "right") {
       player.switchSprite("Fall");
     } else player.switchSprite("FallLeft");

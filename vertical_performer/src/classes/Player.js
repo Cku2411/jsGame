@@ -32,27 +32,22 @@ export class Player extends Sprite {
     // store the last direction
     this.lastDirection = "right";
 
+    // tao Image object va gan cho this.animations[]
     for (let key in this.animations) {
       const image = new Image();
       image.src = this.animations[key].imageSrc;
-
       this.animations[key].image = image;
     }
+
+    this.cameraBox = {
+      position: {
+        x: this.position.x,
+        y: this.position.y,
+      },
+      width: 200,
+      height: 80,
+    };
   }
-  // draw(ctx) {
-  //   if (!this.image) return;
-  //   ctx.drawImage(
-  //     this.image,
-  //     0,
-  //     0,
-  //     25,
-  //     25,
-  //     this.position.x,
-  //     this.position.y,
-  //     25,
-  //     25
-  //   );
-  // }
 
   switchSprite(key) {
     if (this.image === this.animations[key].image || !this.loaded) return;
@@ -63,10 +58,70 @@ export class Player extends Sprite {
     this.frameRate = this.animations[key].frameRate;
   }
 
+  updateCameraBox() {
+    this.cameraBox = {
+      position: {
+        x: this.position.x + this.width / 2 - this.cameraBox.width / 2,
+        y: this.position.y + this.height / 2 - this.cameraBox.height / 2,
+      },
+      width: 200,
+      height: 80,
+    };
+  }
+
+  shouldPanCameraToTheLeft({ camera, canvas }) {
+    const cameraBoxRightSide = this.cameraBox.position.x + this.cameraBox.width;
+
+    if (cameraBoxRightSide >= 576) return;
+
+    if (cameraBoxRightSide >= canvas.width / 4 + Math.abs(camera.position.x)) {
+      camera.position.x -= this.velocity.x;
+    }
+  }
+
+  shouldPanCameraToTheRight({ camera, canvas }) {
+    if (this.cameraBox.position.x <= 0) return;
+    if (this.cameraBox.position.x <= Math.abs(camera.position.x)) {
+      camera.position.x -= this.velocity.x;
+    }
+  }
+
+  shouldPanCameraUp({ camera, canvas }) {
+    if (this.cameraBox.position.y + this.velocity.y <= 0) return;
+    if (this.cameraBox.position.y <= Math.abs(camera.position.y)) {
+      camera.position.y -= this.velocity.y;
+    }
+  }
+
+  shouldPanCameraDown({ camera, canvas }) {
+    if (
+      this.cameraBox.position.y + this.cameraBox.height + this.velocity.y >=
+      432
+    )
+      return;
+    if (
+      this.cameraBox.position.y + this.cameraBox.height >
+      Math.abs(camera.position.y) + canvas.height / 4
+    ) {
+      camera.position.y -= this.velocity.y;
+    }
+  }
+
   update(ctx, gravity, canvas) {
     this.updateFrame();
     this.updateHitbox();
+    // update camera follow player
+    this.updateCameraBox();
     this.prevY = this.hitbox.position.y;
+
+    // // Draw camera
+    // ctx.fillStyle = "rgba(0,0,255,0.2";
+    // ctx.fillRect(
+    //   this.cameraBox.position.x,
+    //   this.cameraBox.position.y,
+    //   this.cameraBox.width,
+    //   this.cameraBox.height
+    // );
 
     // // ===
     // // draw out the rectangel
@@ -110,17 +165,20 @@ export class Player extends Sprite {
 
   checkforHorizontalCollisions(canvas) {
     // check collision with canvasa
-    if (this.hitbox.position.x <= 0) {
-      console.log("VAO K");
-
+    if (this.hitbox.position.x + this.velocity.x <= 0) {
       this.velocity.x = 0;
+
       const offset = this.hitbox.position.x - this.position.x;
       this.position.x = -(this.hitbox.position.x - this.position.x) - 0.01;
-    } else if (this.hitbox.position.x + this.hitbox.width >= canvas.width / 4) {
+    } else if (
+      this.hitbox.position.x + this.hitbox.width + this.velocity.x >=
+      576
+    ) {
       this.velocity.x = 0;
+
       const offset =
         this.hitbox.position.x + this.hitbox.width - this.position.x;
-      this.position.x = canvas.width / 4 - offset - 0.01;
+      this.position.x = 576 - offset - 0.01;
     }
 
     // loop through collision block to detect collisions
