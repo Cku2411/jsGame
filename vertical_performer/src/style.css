@@ -5,4 +5,12 @@ body {
   /* overflow: hidden; */
   image-rendering: pixelated;
   background-color: black;
+  height: 100%;
+}
+
+canvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* dịch ngược lại để nằm giữa */
 }

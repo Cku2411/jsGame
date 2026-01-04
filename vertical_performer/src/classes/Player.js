@@ -29,6 +29,7 @@ export class Player extends Sprite {
     this.collisionBlocks = collisionBlocks;
     this.platFormCollisionBlocks = platFormCollisionBlocks;
     this.animations = animations;
+    this.isAttacking = false;
     // store the last direction
     this.lastDirection = "right";
 
@@ -114,6 +115,10 @@ export class Player extends Sprite {
     this.updateCameraBox();
     this.prevY = this.hitbox.position.y;
 
+    // Kết thúc Attack khi animation chạy xong
+    if (this.isAttacking && this.currentFrame === this.frameRate - 1) {
+      this.isAttacking = false;
+    }
     // // Draw camera
     // ctx.fillStyle = "rgba(0,0,255,0.2";
     // ctx.fillRect(

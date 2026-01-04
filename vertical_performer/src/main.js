@@ -11,7 +11,7 @@ const ctx = canvas.getContext("2d");
 
 canvas.width = 1024;
 canvas.height = 576;
-const gravity = 0.3;
+const gravity = 0.15;
 
 const scaledCanvas = {
   width: canvas.width / 4,
@@ -108,6 +108,11 @@ const player = new Player({
       frameRate: 2,
       frameBuffer: 3,
     },
+    Attack1: {
+      imageSrc: "/warrior/Attack1.png",
+      frameRate: 4,
+      frameBuffer: 5,
+    },
   },
 });
 // const player2 = new Player({ x: 300, y: 10 });
@@ -123,6 +128,9 @@ const keys = {
     pressed: false,
   },
   s: {
+    pressed: false,
+  },
+  f: {
     pressed: false,
   },
 };
@@ -168,6 +176,12 @@ function animate() {
   player.update(ctx, gravity, canvas);
 
   player.velocity.x = 0;
+  // ƯU TIÊN ATTACK
+  if (player.isAttacking) {
+    player.switchSprite("Attack1");
+    ctx.restore();
+    return;
+  }
   if (keys.d.pressed) {
     player.switchSprite("Run");
     player.velocity.x = 1;
@@ -217,9 +231,16 @@ window.addEventListener("keydown", (event) => {
       keys.a.pressed = true;
       break;
 
+    case "f":
+      if (!player.isAttacking) {
+        player.isAttacking = true;
+        player.currentFrame = 0;
+      }
+      break;
+
     case "w":
       keys.w.pressed = true;
-      player.velocity.y = -6;
+      player.velocity.y = -5;
       break;
   }
 });
@@ -231,6 +252,9 @@ window.addEventListener("keyup", (event) => {
       break;
 
     case "a":
+      keys.a.pressed = false;
+      break;
+    case "f":
       keys.a.pressed = false;
       break;
   }
