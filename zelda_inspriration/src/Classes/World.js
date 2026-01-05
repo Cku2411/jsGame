@@ -2,7 +2,20 @@ import { ROWS, COLS, TILE_SIZE } from "../index.js";
 
 export class World {
   constructor() {
-    this.level1 = {};
+    this.level1 = {
+      waterLayer: [],
+      groundLayer: [],
+      backgroundLayer: document.getElementById("bglevel1"),
+      foregroundLayer: document.getElementById("fglevel1"),
+    };
+  }
+
+  drawBackground(ctx) {
+    ctx.drawImage(this.level1.backgroundLayer, 0, 0);
+  }
+
+  drawForeground(ctx) {
+    ctx.drawImage(this.level1.foregroundLayer, 0, 0);
   }
 
   drawGrid(ctx) {
