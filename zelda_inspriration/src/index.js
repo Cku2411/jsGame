@@ -19,7 +19,10 @@ canvas.height = GAME_HEIGHT;
 class Game {
   constructor() {
     this.world = new World();
-    this.hero = new Hero({ position: new Vector2(3, 2), game: this });
+    this.hero = new Hero({
+      position: new Vector2(1 * TILE_SIZE, 1 * TILE_SIZE),
+      game: this,
+    });
     this.input = new Input();
   }
 
