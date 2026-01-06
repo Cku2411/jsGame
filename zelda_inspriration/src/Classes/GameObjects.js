@@ -1,18 +1,22 @@
-import { TILE_SIZE } from "../index.js";
+import { HALF_TILE, TILE_SIZE } from "../index.js";
 import { Vector2 } from "./Vector2.js";
 
 export class GameObject {
   constructor({ game, sprite, position, scale }) {
     this.game = game;
     this.sprite = sprite ?? {
+      image: "",
       x: 0,
       y: 0,
-      Width: TILE_SIZE,
+      width: TILE_SIZE,
       height: TILE_SIZE,
-      image: "",
     };
     this.position = position ?? new Vector2(0, 0);
     this.scale = scale ?? 1;
+
+    this.width = this.sprite.width * this.scale;
+    this.halfWidth = this.width / 2;
+    this.height = this.sprite.height * this.scale;
 
     this.destinationPosition = new Vector2(this.position.x, this.position.y);
     this.distanceToTravel = new Vector2(0, 0);
@@ -50,7 +54,28 @@ export class GameObject {
   }
 
   draw(ctx) {
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "blue";
     ctx.fillRect(this.position.x, this.position.y, TILE_SIZE, TILE_SIZE);
+
+    ctx.strokeStyle = "yellow";
+    ctx.strokeRect(
+      this.destinationPosition.x,
+      this.destinationPosition.y,
+      TILE_SIZE,
+      TILE_SIZE
+    );
+
+    // draw sprite
+    ctx.drawImage(
+      this.sprite.image,
+      this.sprite.x * this.sprite.width,
+      this.sprite.y * this.sprite.height,
+      this.sprite.width,
+      this.sprite.height,
+      this.position.x + HALF_TILE - this.halfWidth,
+      this.position.y + TILE_SIZE - this.height,
+      this.width,
+      this.height
+    );
   }
 }
