@@ -32,21 +32,28 @@ class Game {
       position: new Vector2(1 * TILE_SIZE, 1 * TILE_SIZE),
       scale: 1,
     });
-    this.input = new Input();
+    this.input = new Input(this);
 
     this.eventUpdate = false;
     this.eventTimer = 0;
     this.eventInterval = 100;
+
+    this.debug = false;
+  }
+
+  toggleDebug() {
+    this.debug = !this.debug;
   }
 
   render(deltaTime) {
     this.hero.update(deltaTime);
     this.world.drawBackground(ctx);
-    this.world.drawGrid(ctx);
+    if (this.debug) this.world.drawGrid(ctx);
     this.hero.draw(ctx);
 
     // foreground helps hero move behind them
     this.world.drawForeground(ctx);
+    if (this.debug) this.world.drawCollisionMap(ctx);
 
     // check Frames update in 200ms
     if (this.eventTimer < this.eventInterval) {
@@ -72,8 +79,6 @@ function animate(lastFrameTimeEnd) {
   // find delta time (time between frames)
   const deltaTime = lastFrameTimeEnd - lastFrameTimeStart;
   lastFrameTimeStart = lastFrameTimeEnd;
-
-  console.log({ deltaTime });
 
   game.render(deltaTime);
 }

@@ -54,16 +54,18 @@ export class GameObject {
   }
 
   draw(ctx) {
-    ctx.fillStyle = "blue";
-    ctx.fillRect(this.position.x, this.position.y, TILE_SIZE, TILE_SIZE);
+    if (this.game.debug) {
+      ctx.fillStyle = "blue";
+      ctx.fillRect(this.position.x, this.position.y, TILE_SIZE, TILE_SIZE);
 
-    ctx.strokeStyle = "yellow";
-    ctx.strokeRect(
-      this.destinationPosition.x,
-      this.destinationPosition.y,
-      TILE_SIZE,
-      TILE_SIZE
-    );
+      ctx.strokeStyle = "yellow";
+      ctx.strokeRect(
+        this.destinationPosition.x,
+        this.destinationPosition.y,
+        TILE_SIZE,
+        TILE_SIZE
+      );
+    }
 
     // draw sprite
     ctx.drawImage(

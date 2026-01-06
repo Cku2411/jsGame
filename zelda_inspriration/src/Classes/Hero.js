@@ -18,7 +18,6 @@ export class Hero extends GameObject {
     // remember speed shows how many pixels per seconds the character to move
     // delta time is time between frames (we want ration deltaTime/1000ms)
     const scaledSpeed = this.speed * (deltaTime / 1000);
-    console.log({ scaledSpeed });
 
     const distance = this.moveTowards(this.destinationPosition, scaledSpeed);
     const arrived = distance <= scaledSpeed;
@@ -38,8 +37,19 @@ export class Hero extends GameObject {
         this.sprite.y = 11;
       }
 
-      this.destinationPosition.x = nextX;
-      this.destinationPosition.y = nextY;
+      const col = nextX / TILE_SIZE;
+      const row = nextY / TILE_SIZE;
+
+      if (
+        this.game.world.getTile(
+          this.game.world.level1.collisionLayer,
+          row,
+          col
+        ) !== 1
+      ) {
+        this.destinationPosition.x = nextX;
+        this.destinationPosition.y = nextY;
+      }
     }
 
     if (this.game.input.keys.length > 0 || !arrived) {
