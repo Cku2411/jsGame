@@ -5,6 +5,7 @@ class Resources {
       background: "/data/Images/pelletTown.png",
       // heroImg
       shadow: "/data/Images/shadow.png",
+      body: "/data/Images/playerRight.png",
     };
 
     this.images = {};

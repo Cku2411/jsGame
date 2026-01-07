@@ -1,5 +1,7 @@
 import { Input } from "../Input.js";
+import { Hero } from "./classes/Hero.js";
 import { Word } from "./classes/World.js";
+import { Vector2 } from "./utils/vector2.js";
 
 export const TILE_SIZE = 12;
 export const COLS = 70;
@@ -19,13 +21,18 @@ canvas.height = GAME_HEIGHT;
 class Game {
   constructor() {
     this.world = new Word();
-    this.hero = "";
+    this.hero = new Hero({
+      position: new Vector2(25 * TILE_SIZE, 20 * TILE_SIZE),
+      game: this,
+    });
     this.input = new Input(this);
   }
 
   render() {
+    this.hero.update();
     this.world.drawBackground(ctx);
     this.world.drawGrid(ctx);
+    this.hero.draw(ctx);
   }
 }
 

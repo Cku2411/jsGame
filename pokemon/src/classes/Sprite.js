@@ -1,7 +1,12 @@
-export class Sprite {
-  constructor({ position, resource, frameSize }) {
+import { TILE_SIZE } from "../main.js";
+import { GameObject } from "./GameObjects.js";
+
+export class Sprite extends GameObject {
+  constructor({ position, resource, frameSize, scale }) {
+    super({});
     this.position = position;
     this.resource = resource;
+    this.scale = scale ?? 1;
   }
 
   draw(ctx) {
@@ -14,8 +19,8 @@ export class Sprite {
       this.resource.image,
       this.position.x,
       this.position.y,
-      this.width,
-      this.height
+      TILE_SIZE * this.scale,
+      TILE_SIZE * this.scale
     );
   }
 

@@ -4,3 +4,8 @@ export class Vector2 {
     this.y = y;
   }
 }
+
+export const gridCells = (n) => {
+  // our grid is based on 16px
+  return n * 16;
+};
