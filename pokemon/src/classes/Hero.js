@@ -18,14 +18,20 @@ export class Hero extends GameObject {
     });
     this.addChild(shadow);
 
-    const body = new Sprite({
+    this.body = new Sprite({
       resource: resources.images.body,
       position: this.position,
       scale: 1,
+      VFrames: 4,
+      // hFrames: 7,
+      currentFrame: 0,
     });
 
-    this.addChild(body);
-    this.speed = 2;
+    this.addChild(this.body);
+
+    console.log(this.body.width);
+
+    this.speed = 4;
   }
 
   draw(ctx) {
@@ -43,5 +49,12 @@ export class Hero extends GameObject {
     } else if (this.game.input.lastKey === RIGHT) {
       this.position.x += this.speed;
     }
+
+    // update this.center
+
+    this.center = {
+      x: this.position.x + this.body.width / 2,
+      y: this.position.y + this.body.height / 2,
+    };
   }
 }

@@ -6,17 +6,16 @@ export class GameObject {
     this.position = position ?? new Vector2(0, 0);
     this.children = [];
     this.game = game;
+    this.center = {
+      x: this.position.x + TILE_SIZE / 2,
+      y: this.position.y + TILE_SIZE / 2,
+    };
   }
 
   draw(ctx) {
     // this.children.forEach((child) => child.draw(ctx));
     ctx.fillStyle = "blue";
-    ctx.fillRect(
-      this.position.x,
-      this.position.y,
-      TILE_SIZE * 4,
-      4 * TILE_SIZE
-    );
+    ctx.fillRect(this.position.x, this.position.y, TILE_SIZE, TILE_SIZE);
   }
 
   update() {}
