@@ -21,7 +21,7 @@ export class Hero extends GameObject {
     const body = new Sprite({
       resource: resources.images.body,
       position: this.position,
-      scale: 2,
+      scale: 1,
     });
 
     this.addChild(body);
@@ -29,6 +29,7 @@ export class Hero extends GameObject {
   }
 
   draw(ctx) {
+    super.draw(ctx);
     this.children.forEach((child) => child.draw(ctx));
   }
 

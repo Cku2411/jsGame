@@ -11,7 +11,12 @@ export class GameObject {
   draw(ctx) {
     // this.children.forEach((child) => child.draw(ctx));
     ctx.fillStyle = "blue";
-    ctx.fillRect(this.position.x, this.position.y, TILE_SIZE, TILE_SIZE);
+    ctx.fillRect(
+      this.position.x,
+      this.position.y,
+      TILE_SIZE * 4,
+      4 * TILE_SIZE
+    );
   }
 
   update() {}

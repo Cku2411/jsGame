@@ -19,8 +19,8 @@ export class Sprite extends GameObject {
       this.resource.image,
       this.position.x,
       this.position.y,
-      TILE_SIZE * this.scale,
-      TILE_SIZE * this.scale
+      this.resource.image.width * this.scale,
+      this.resource.image.height * this.scale
     );
   }
 
