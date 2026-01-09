@@ -2,7 +2,7 @@ class Resources {
   constructor() {
     // everything we plan to draw
     this.toLoad = {
-      background: "/data/Images/mapZoom.png",
+      background: "/data/Images/world.png",
       // heroImg
       shadow: "/data/Images/shadow.png",
       ninja: "/data/Images/hero2.png",
