@@ -3,6 +3,7 @@ import { Hero } from "./classes/Hero.js";
 import { Word } from "./classes/World.js";
 import { Vector2 } from "./utils/vector2.js";
 import { Camera } from "./classes/Camera.js";
+import { Ninja } from "./classes/Ninja.js";
 
 export const zoom = 4;
 export const TILE_SIZE = 48;
@@ -41,16 +42,25 @@ class Game {
       position: new Vector2(25 * TILE_SIZE, 20 * TILE_SIZE),
       game: this,
     });
+
     this.input = new Input(this);
     this.debug = false;
     // this.camera = new Camera({ mapLevel: this.world, GAME_WIDTH, GAME_HEIGHT });
+    this.enemies = [];
+    const ninja = new Ninja({
+      position: new Vector2(29 * TILE_SIZE, 20 * TILE_SIZE),
+      game: this,
+    });
+
+    this.enemies.push(ninja);
   }
 
-  render() {
+  render(deltaTime) {
     this.world.drawBackground(ctx);
-    this.hero.update();
+    this.hero.update(deltaTime);
     if (this.debug) this.world.drawGrid(ctx);
     this.hero.draw(ctx);
+    this.enemies.forEach((enemy) => enemy.draw(ctx));
 
     horizontalScrollDistance = Math.min(
       Math.max(0, this.hero.center.x - VIEW_PORT_CENTER_X),
@@ -71,14 +81,21 @@ class Game {
 
 const game = new Game();
 
-function animate() {
+let lastFrameTimeStart = 0;
+
+//lastFrameTimeEnd là tham số truyền vòa từ hàm requestAnimation
+function animate(lastFrameTimeEnd) {
   requestAnimationFrame(animate);
+
+  // find delta time (time between frames)
+  const deltaTime = lastFrameTimeEnd - lastFrameTimeStart;
+  lastFrameTimeStart = lastFrameTimeEnd;
 
   ctx.save();
   ctx.translate(-horizontalScrollDistance, -verticalSrollDistance);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  game.render();
+  game.render(deltaTime);
   ctx.restore();
 }
 

@@ -5,7 +5,9 @@ class Resources {
       background: "/data/Images/mapZoom.png",
       // heroImg
       shadow: "/data/Images/shadow.png",
-      body: "/data/Images/playerDown.png",
+      ninja: "/data/Images/hero2.png",
+      // body: "/data/Images/hero2.png",
+      body: "/data/Images/hero3.png",
     };
 
     this.images = {};

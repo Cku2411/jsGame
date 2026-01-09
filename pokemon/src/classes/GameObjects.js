@@ -14,8 +14,10 @@ export class GameObject {
 
   draw(ctx) {
     // this.children.forEach((child) => child.draw(ctx));
-    ctx.fillStyle = "blue";
-    ctx.fillRect(this.position.x, this.position.y, TILE_SIZE, TILE_SIZE);
+    if (this.game.debug) {
+      ctx.fillStyle = "rgba(0,255,0,0.2)";
+      ctx.fillRect(this.position.x, this.position.y, TILE_SIZE, TILE_SIZE);
+    }
   }
 
   update() {}

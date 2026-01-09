@@ -11,6 +11,8 @@ export class Sprite extends GameObject {
     hFrames, // how the sprite arranged horizontally
     VFrames, // how the sprite arranged vertically
     currentFrame, // which frame we want to fromStart
+    animations,
+    currentSprite,
   }) {
     super({});
     this.position = position;
@@ -27,12 +29,13 @@ export class Sprite extends GameObject {
     this.VFrames = VFrames ?? 1;
     this.currentFrame = currentFrame ?? 0;
 
+    this.animations = animations ?? null;
+
     this.width = (this.resource.image.width / this.VFrames) * this.scale;
     this.height = (this.resource.image.height / this.hFrames) * this.scale;
     this.halfWidth = this.width / 2;
-    this.buildFrameMap();
-
-    console.log(this.frameMap);
+    this.elaspedTime = 0;
+    this.currentSprite = currentSprite ?? null;
   }
 
   draw(ctx) {
@@ -59,51 +62,51 @@ export class Sprite extends GameObject {
     //   this.height
     // );
 
-    // draw sprite
-    ctx.drawImage(
-      this.resource.image,
-      cropBox.height * this.currentFrame,
-      cropBox.height * this.currentFrame,
-      cropBox.width,
-      cropBox.height,
-      this.position.x + HALF_TILE - this.halfWidth,
-      this.position.y + TILE_SIZE - this.height,
-      this.width,
-      this.height
-    );
-  }
-
-  buildFrameMap() {
-    // get frame from image
-    let frameCount = 0;
-    // start with vertical frame  (y)
-    for (let v = 0; v < this.VFrames; v++) {
-      //   loop horizontal frame
-      for (let h = 0; h < this.hFrames; h++) {
-        // store in frame map
-        this.frameMap.set(
-          frameCount,
-          new Vector2(this.frameSize.x * h, this.frameSize.y * v)
-        );
-        frameCount++;
-      }
+    if (!this.animations) {
+      ctx.drawImage(
+        this.resource.image,
+        this.position.x + HALF_TILE - this.halfWidth,
+        this.position.y + TILE_SIZE - this.height,
+        this.width,
+        this.height
+      );
+    } else {
+      // draw sprite
+      ctx.drawImage(
+        this.resource.image,
+        this.currentSprite.x,
+        this.currentSprite.height * this.currentFrame + 0.5,
+        this.currentSprite.width,
+        this.currentSprite.height,
+        this.position.x + HALF_TILE - this.halfWidth,
+        this.position.y + TILE_SIZE - this.height,
+        this.width,
+        this.height
+      );
     }
   }
 
-  update(ctx) {
-    this.draw(ctx);
-    // this.updateFrame();
+  update(deltaTime) {
+    if (this.hFrames == 1 && this.VFrames == 1) return;
+    if (!deltaTime) return;
+
+    const interValToGoToNextFrame = 120;
+
+    this.elaspedTime += deltaTime;
+    if (this.elaspedTime > interValToGoToNextFrame) {
+      this.currentFrame =
+        (this.currentFrame + 1) % this.currentSprite.frameCount;
+      this.elaspedTime -= interValToGoToNextFrame;
+    }
   }
 
-  // updateFrame() {
+  // updateFrame(deltaTime) {
   //   // count frame troi qua (ham requestAnimation 60frames/s)
-  //   this.elapsedFrames++;
+  //   this.elapsedFrames += deltaTime;
 
   //   if (this.elapsedFrames % this.frameBuffer == 0) {
   //     if (this.currentFrame < this.frameRate - 1) this.currentFrame++;
   //     else this.currentFrame = 0;
   //   }
   // }
-
-  swichFrame() {}
 }
