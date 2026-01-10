@@ -2,8 +2,8 @@ import { Input } from "../Input.js";
 import { Hero } from "./classes/Hero.js";
 import { Word } from "./classes/World.js";
 import { Vector2 } from "./utils/vector2.js";
-import { Camera } from "./classes/Camera.js";
-import { Ninja } from "./classes/Ninja.js";
+import { Monster } from "./classes/Monster.js";
+import { resources } from "./classes/resources.js";
 
 export const zoom = 4;
 export const TILE_SIZE = 48;
@@ -45,14 +45,23 @@ class Game {
 
     this.input = new Input(this);
     this.debug = false;
-    // this.camera = new Camera({ mapLevel: this.world, GAME_WIDTH, GAME_HEIGHT });
+    this.fps = 0; // thêm biến fps
+
     this.enemies = [];
-    const ninja = new Ninja({
+
+    const enemy1 = new Monster({
+      resource: resources.images.enemy1,
       position: new Vector2(29 * TILE_SIZE, 20 * TILE_SIZE),
       game: this,
     });
 
-    this.enemies.push(ninja);
+    const enemy2 = new Monster({
+      resource: resources.images.enemy2,
+      position: new Vector2(30 * TILE_SIZE, 25 * TILE_SIZE),
+      game: this,
+    });
+
+    this.enemies.push(enemy1, enemy2);
   }
 
   render(deltaTime) {
@@ -60,7 +69,19 @@ class Game {
     this.hero.update(deltaTime);
     if (this.debug) this.world.drawGrid(ctx);
     this.hero.draw(ctx);
-    this.enemies.forEach((enemy) => enemy.draw(ctx));
+    // render enemies
+    // this.enemies.forEach((enemy) => enemy.draw(ctx));
+    for (let i = this.enemies.length - 1; i >= 0; i--) {
+      const enemy = this.enemies[i];
+      enemy.update(deltaTime);
+      enemy.draw(ctx);
+    }
+
+    this.world.drawForeground(ctx);
+
+    if (deltaTime > 0) {
+      this.fps = Math.round(1000 / deltaTime);
+    }
 
     horizontalScrollDistance = Math.min(
       Math.max(0, this.hero.center.x - VIEW_PORT_CENTER_X),
@@ -75,12 +96,19 @@ class Game {
   toggleDebug() {
     this.debug = !this.debug;
   }
+
+  renderFPS(ctx) {
+    ctx.fillStyle = "rgba(0,0,0,0.5)";
+    ctx.fillRect(10, 10, 80, 30);
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "lime";
+    ctx.fillText(`FPS: ${this.fps}`, 20, 30);
+  }
 }
 
 // ====RUN====
 
-const game = new Game();
-
+let game = null;
 let lastFrameTimeStart = 0;
 
 //lastFrameTimeEnd là tham số truyền vòa từ hàm requestAnimation
@@ -95,8 +123,34 @@ function animate(lastFrameTimeEnd) {
   ctx.translate(-horizontalScrollDistance, -verticalSrollDistance);
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  game.render(deltaTime);
+  if (game) {
+    game.render(deltaTime);
+  } else {
+    // Show loading message
+    ctx.fillStyle = "white";
+    ctx.font = "24px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("Loading images...", canvas.width / 2, canvas.height / 2);
+  }
+
   ctx.restore();
+
+  if (game) {
+    game.renderFPS(ctx);
+  }
 }
+
+// Wait for all images to load before starting the game
+resources
+  .loadAll()
+  .then(() => {
+    game = new Game();
+    console.log("Game started!");
+  })
+  .catch((error) => {
+    console.error("Failed to load resources:", error);
+    // Still try to start the game even if some images failed
+    game = new Game();
+  });
 
 requestAnimationFrame(animate);

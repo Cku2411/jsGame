@@ -19,20 +19,29 @@ export class Sprite extends GameObject {
     this.resource = resource;
     this.scale = scale ?? 1;
 
-    this.frameSize = frameSize ?? {
-      x: this.resource.image.width / this.VFrames,
-      y: this.resource.image.height / this.hFrames,
-    };
-    this.frameMap = new Map(); //store the frmae
-
     this.hFrames = hFrames ?? 1;
     this.VFrames = VFrames ?? 1;
     this.currentFrame = currentFrame ?? 0;
 
     this.animations = animations ?? null;
 
-    this.width = (this.resource.image.width / this.VFrames) * this.scale;
-    this.height = (this.resource.image.height / this.hFrames) * this.scale;
+    // Initialize dimensions - will be calculated when image loads
+    // For now, use default values or calculate if image is already loaded
+    if (this.resource.isLoaded && this.resource.image.width > 0) {
+      this.width = (this.resource.image.width / this.VFrames) * this.scale;
+      this.height = (this.resource.image.height / this.hFrames) * this.scale;
+      this.frameSize = frameSize ?? {
+        x: this.resource.image.width / this.VFrames,
+        y: this.resource.image.height / this.hFrames,
+      };
+    } else {
+      // Default values until image loads
+      this.width = 16 * this.scale;
+      this.height = 16 * this.scale;
+      this.frameSize = frameSize ?? { x: 16, y: 16 };
+    }
+
+    this.frameMap = new Map(); //store the frmae
     this.halfWidth = this.width / 2;
     this.elaspedTime = 0;
     this.currentSprite = currentSprite ?? null;
@@ -41,6 +50,13 @@ export class Sprite extends GameObject {
   draw(ctx) {
     if (!this.resource.isLoaded) {
       return;
+    }
+
+    // Update dimensions if they weren't set correctly during construction
+    if (this.resource.image.width > 0 && this.resource.image.height > 0) {
+      this.width = (this.resource.image.width / this.VFrames) * this.scale;
+      this.height = (this.resource.image.height / this.hFrames) * this.scale;
+      this.halfWidth = this.width / 2;
     }
 
     // create CropBox

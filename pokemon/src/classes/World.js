@@ -5,15 +5,24 @@ import { Camera } from "./Camera.js";
 export class Word {
   constructor() {
     this.level1 = {
-      backgroundLayer: resources.images.background,
+      // backgroundLayer: resources.images.background,
+      backgroundLayer: document.getElementById("world"),
+      foregroundLayer: resources.images.foreground,
     };
     this.camera = new Camera({ mapLevel: this, WORLD_WIDTH, WORLD_HEIGHT });
     this.zoom = 4;
   }
 
   drawBackground(ctx) {
-    if (this.level1.backgroundLayer.isLoaded) {
-      ctx.drawImage(this.level1.backgroundLayer.image, 0, 0);
+    // if (this.level1.backgroundLayer.isLoaded) {
+    //   ctx.drawImage(this.level1.backgroundLayer.image, 0, 0);
+    // }
+    ctx.drawImage(this.level1.backgroundLayer, 0, 0);
+  }
+
+  drawForeground(ctx) {
+    if (this.level1.foregroundLayer.isLoaded) {
+      ctx.drawImage(this.level1.foregroundLayer.image, 0, 0);
     }
   }
 
