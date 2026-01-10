@@ -14,8 +14,7 @@ export class Sprite extends GameObject {
     animations,
     currentSprite,
   }) {
-    super({});
-    this.position = position;
+    super({ position: position });
     this.resource = resource;
     this.scale = scale ?? 1;
 

@@ -4,6 +4,7 @@ import { Word } from "./classes/World.js";
 import { Vector2 } from "./utils/vector2.js";
 import { Monster } from "./classes/Monster.js";
 import { resources } from "./classes/resources.js";
+import { Weapon } from "./classes/Weapon.js";
 
 export const zoom = 4;
 export const TILE_SIZE = 48;
@@ -48,10 +49,11 @@ class Game {
     this.fps = 0; // thêm biến fps
 
     this.enemies = [];
+    this.items = [];
 
     const enemy1 = new Monster({
       resource: resources.images.enemy1,
-      position: new Vector2(29 * TILE_SIZE, 20 * TILE_SIZE),
+      position: new Vector2(50 * TILE_SIZE, 22 * TILE_SIZE),
       game: this,
     });
 
@@ -61,7 +63,14 @@ class Game {
       game: this,
     });
 
+    const weapon1 = new Weapon({
+      resource: resources.images.weapon1,
+      position: new Vector2(26 * TILE_SIZE, 21 * TILE_SIZE),
+      game: this,
+    });
+
     this.enemies.push(enemy1, enemy2);
+    this.items.push(weapon1);
   }
 
   render(deltaTime) {
@@ -75,6 +84,12 @@ class Game {
       const enemy = this.enemies[i];
       enemy.update(deltaTime);
       enemy.draw(ctx);
+    }
+
+    for (let i = this.items.length - 1; i >= 0; i--) {
+      const item = this.items[i];
+      item.update(deltaTime);
+      item.draw(ctx);
     }
 
     this.world.drawForeground(ctx);

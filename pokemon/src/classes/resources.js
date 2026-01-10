@@ -11,6 +11,10 @@ class Resources {
       // enemies
       enemy1: "/data/Images/enemies/enemy1.png",
       enemy2: "/data/Images/enemies/enemy2.png",
+
+      // Weapon:
+      weapon1: "/data/Images/weapons/katana.png",
+      weapon2: "/data/Images/weapons/axe.png",
     };
 
     this.images = {};
@@ -59,7 +63,7 @@ class Resources {
 
   // Method to check if all images are loaded
   isAllLoaded() {
-    return Object.values(this.images).every(img => img.isLoaded);
+    return Object.values(this.images).every((img) => img.isLoaded);
   }
 }
 

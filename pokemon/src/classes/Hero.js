@@ -33,8 +33,15 @@ export class Hero extends GameObject {
         walkLeft: { x: 32, y: 0, width: 16, height: 16, frameCount: 4 },
       },
     });
-
     this.addChild(this.body);
+
+    this.weapon = new Sprite({
+      resource: resources.images.weapon2,
+      position: { x: this.position.x, y: this.position.y - 5 },
+      scale: 3,
+    });
+    this.addChild(this.weapon);
+
     this.speed = 4;
   }
 
@@ -54,6 +61,8 @@ export class Hero extends GameObject {
       this.body.currentSprite.frameCount = 4;
     } else if (this.game.input.lastKey === DOWN) {
       this.position.y += this.speed;
+      console.log(this.position.y);
+
       this.body.currentSprite = this.body.animations.walkDown;
       this.body.currentSprite.frameCount = 4;
     } else if (this.game.input.lastKey === LEFT) {
