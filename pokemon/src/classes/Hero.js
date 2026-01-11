@@ -51,8 +51,8 @@ export class Hero extends GameObject {
     this.weaponOffsets = {
       DOWN: { x: -5, y: -20, angle: 0, zIndex: -1 }, // Vẽ đè lên người
       UP: { x: 10, y: -5, angle: 180, zIndex: 1 }, // Vẽ sau lưng
-      LEFT: { x: 15, y: -5, angle: -90, zIndex: 1 },
-      RIGHT: { x: -15, y: -5, angle: 90, zIndex: 1 },
+      LEFT: { x: 15, y: -5, angle: -90, zIndex: -1 },
+      RIGHT: { x: -15, y: -5, angle: 90, zIndex: -1 },
     };
     // this.addChild(this.weapon);
 
