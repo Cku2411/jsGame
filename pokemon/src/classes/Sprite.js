@@ -90,7 +90,8 @@ export class Sprite extends GameObject {
       ctx.drawImage(
         this.resource.image,
         this.currentSprite.x,
-        this.currentSprite.height * this.currentFrame + 0.5,
+        this.currentSprite.y +
+          (this.currentSprite.height * this.currentFrame + 0.5),
         this.currentSprite.width,
         this.currentSprite.height,
         this.position.x + HALF_TILE - this.halfWidth,

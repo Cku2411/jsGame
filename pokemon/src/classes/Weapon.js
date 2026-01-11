@@ -23,6 +23,7 @@ export class Weapon extends GameObject {
     });
 
     this.addChild(this.body);
+    // ancor with hero
   }
 
   draw(ctx) {

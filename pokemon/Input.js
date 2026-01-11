@@ -2,6 +2,7 @@ export const LEFT = "LEFT";
 export const RIGHT = "RIGHT";
 export const UP = "UP";
 export const DOWN = "DOWN";
+export const ATTACK = "ATTACK";
 
 export class Input {
   constructor(game) {
@@ -17,6 +18,9 @@ export class Input {
         this.keyPressed(LEFT);
       } else if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") {
         this.keyPressed(RIGHT);
+      } else if (e.key === " " || e.key.toLowerCase() === "f") {
+        e.preventDefault();
+        this.keyPressed(ATTACK);
       }
     });
 
@@ -31,6 +35,9 @@ export class Input {
         this.keyRelease(RIGHT);
       } else if (e.key === "Enter") {
         this.game.toggleDebug();
+      } else if (e.key === " " || e.key.toLowerCase() === "f") {
+        e.preventDefault();
+        this.keyRelease(ATTACK);
       }
     });
   }
