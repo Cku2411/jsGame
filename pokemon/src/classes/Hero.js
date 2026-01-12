@@ -54,6 +54,16 @@ export class Hero extends GameObject {
       LEFT: { x: 15, y: -5, angle: -90, zIndex: -1 },
       RIGHT: { x: -15, y: -5, angle: 90, zIndex: -1 },
     };
+
+    this.swingData = {
+      // Chém từ trên cao bên phải xuống thấp bên trái
+      UP: { startAngle: -120, endAngle: 45, pivotOffset: { x: 15, y: 12 } },
+      // Chém ngược lại
+      DOWN: { startAngle: 200, endAngle: 80, pivotOffset: { x: 28, y: 60 } },
+      // Nhìn ngang: chém bổ từ trên xuống
+      LEFT: { startAngle: 290, endAngle: 210, pivotOffset: { x: -10, y: 40 } },
+      RIGHT: { startAngle: -30, endAngle: 60, pivotOffset: { x: 60, y: 40 } },
+    };
     // this.addChild(this.weapon);
 
     this.facingDirection = DOWN;
@@ -70,6 +80,10 @@ export class Hero extends GameObject {
     super.draw(ctx);
     // draw children
 
+    if (this.isAttacking) {
+      this.weaponOffsets.UP.zIndex = -1;
+    }
+
     if (this.weaponOffsets[this.facingDirection].zIndex == -1) {
       this.drawWeapon(ctx);
     }
@@ -83,11 +97,43 @@ export class Hero extends GameObject {
   drawWeapon(ctx) {
     // find offsetwebpon
     const offset = this.weaponOffsets[this.facingDirection];
-    ctx.save();
-    ctx.translate(this.position.x + offset.x, this.position.y + offset.y);
-    // ctx.rotate((offset.angle * Math.PI) / 100);
-    this.weapon.draw(ctx);
-    ctx.restore();
+    const swingInfo = this.swingData[this.facingDirection];
+
+    if (!this.weapon.resource.isLoaded) return;
+
+    if (this.isAttacking) {
+      ctx.save();
+      // 2. TÍNH TOÁN ĐIỂM TRỤC (PIVOT)
+      // Điểm trục là vị trí cái tay cầm rìu.
+      // Nó dựa trên vị trí Hero + vị trí cầm tĩnh + điều chỉnh nhỏ cho cú chém
+      const pivotX = this.position.x + offset.x + swingInfo.pivotOffset.x;
+      const pivotY = this.position.y + offset.y + swingInfo.pivotOffset.y;
+      ctx.translate(pivotX, pivotY);
+      let currentAngleDeg = swingInfo.startAngle;
+      if (this.isAttacking) {
+        const progress = this.attackElapsed / this.attackDuration;
+        currentAngleDeg =
+          swingInfo.startAngle +
+          (swingInfo.endAngle - swingInfo.startAngle) * progress;
+      }
+      ctx.rotate((Math.PI / 2) * 0.5);
+      // 4. XOAY CANVAS
+      // Chuyển đổi độ sang radian
+      ctx.rotate((currentAngleDeg * Math.PI) / 180);
+      const weaponImg = this.weapon.resource.image;
+      const w = this.weapon.width;
+      const h = this.weapon.height;
+      ctx.drawImage(weaponImg, -w / 2, -h * 0.8, w, h);
+      // (Debug) Vẽ một chấm đỏ để biết điểm trục đang ở đâu
+      ctx.fillStyle = "red";
+      ctx.fillRect(-1, -1, 2, 2);
+      ctx.restore();
+    } else {
+      ctx.save();
+      ctx.translate(this.position.x + offset.x, this.position.y + offset.y);
+      this.weapon.draw(ctx);
+      ctx.restore();
+    }
   }
 
   attack() {
@@ -143,6 +189,7 @@ export class Hero extends GameObject {
       // qua thoi gian thi rest
     } else if (this.isAttacking && this.attackElapsed >= this.attackDuration) {
       this.isAttacking = false;
+      this.weaponOffsets.UP.zIndex = 1;
       this.attackElapsed = 0;
       // reset sprite
       this.resetSprite();
