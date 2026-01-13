@@ -6,6 +6,7 @@ import { Monster } from "./classes/Monster.js";
 import { resources } from "./classes/resources.js";
 import { Weapon } from "./classes/Weapon.js";
 import { isCollision } from "./utils/utils.js";
+import { Heart } from "./classes/Heart.js";
 
 export const zoom = 4;
 export const TILE_SIZE = 48;
@@ -46,6 +47,29 @@ class Game {
     });
 
     this.input = new Input(this);
+
+    this.hearts = [
+      new Heart({
+        position: new Vector2(10, 20),
+        resourse: resources.images.heart,
+        game: this,
+        currentFrame: 0,
+      }),
+      new Heart({
+        position: new Vector2(50, 20),
+        resourse: resources.images.heart,
+        game: this,
+        currentFrame: 1,
+      }),
+
+      new Heart({
+        position: new Vector2(90, 20),
+        resourse: resources.images.heart,
+        game: this,
+        currentFrame: 2,
+      }),
+    ];
+
     this.debug = false;
     this.fps = 0; // thêm biến fps
 
@@ -94,8 +118,14 @@ class Game {
       game: this,
     });
 
+    const weapon2 = new Weapon({
+      resource: resources.images.weapon1,
+      position: new Vector2(28 * TILE_SIZE, 21 * TILE_SIZE),
+      game: this,
+    });
+
     this.enemies.push(enemy1, enemy2, enemy3, enemy4, enemy5, enemy6);
-    this.items.push(weapon1);
+    this.items.push(weapon1, weapon2);
   }
 
   render(deltaTime) {
@@ -104,16 +134,20 @@ class Game {
     if (this.debug) this.world.drawGrid(ctx);
     this.hero.draw(ctx);
     // render enemies
-    // this.enemies.forEach((enemy) => enemy.draw(ctx));
+    this.enemies.forEach((enemy) => enemy.draw(ctx));
     for (let i = this.enemies.length - 1; i >= 0; i--) {
       const enemy = this.enemies[i];
       enemy.update(deltaTime);
       enemy.draw(ctx);
       // check enemy collision
-      if (isCollision({ object1: this.hero.body, object2: enemy.hitbox })) {
+      if (
+        isCollision({ object1: this.hero.body, object2: enemy.hitbox }) &&
+        !enemy.invincible &&
+        !this.hero.invincible
+      ) {
         console.log("ENEMY ATTAK HEROS");
         this.hero.getHitted = true;
-        this.hero.getHitedByEnemy(45);
+        this.hero.getHitedByEnemy(1);
       }
       if (
         this.hero.isAttacking &&
@@ -158,10 +192,10 @@ class Game {
 
   renderFPS(ctx) {
     ctx.fillStyle = "rgba(0,0,0,0.5)";
-    ctx.fillRect(10, 10, 80, 30);
+    ctx.fillRect(750, 10, 80, 30);
     ctx.font = "16px Arial";
     ctx.fillStyle = "lime";
-    ctx.fillText(`FPS: ${this.fps}`, 20, 30);
+    ctx.fillText(`FPS: ${this.fps}`, 760, 30);
   }
 }
 
@@ -196,6 +230,7 @@ function animate(lastFrameTimeEnd) {
 
   if (game) {
     game.renderFPS(ctx);
+    game.hearts.forEach((heart) => heart.draw(ctx));
   }
 }
 

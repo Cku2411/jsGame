@@ -19,6 +19,9 @@ class Resources {
       // Weapon:
       weapon1: "/data/Images/weapons/katana.png",
       weapon2: "/data/Images/weapons/axe.png",
+
+      // health
+      heart: "/data/Images/Ui/Heart.png",
     };
 
     this.images = {};

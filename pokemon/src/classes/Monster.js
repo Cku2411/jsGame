@@ -23,7 +23,6 @@ export class Monster extends GameObject {
       VFrames: 4,
       hFrames: 4,
       currentFrame: 0,
-      currentSprite: { x: 0, y: 0, width: 16, height: 16, frameCount: 4 },
       animations: {
         walkDown: { x: 0, y: 0, width: 16, height: 16, frameCount: 4 },
         walkUp: { x: 16, y: 0, width: 16, height: 16, frameCount: 4 },

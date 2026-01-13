@@ -6,7 +6,7 @@ export class Sprite extends GameObject {
   constructor({
     position,
     resource,
-    frameSize,
+    direction,
     scale,
     hFrames, // how the sprite arranged horizontally
     VFrames, // how the sprite arranged vertically
@@ -21,29 +21,42 @@ export class Sprite extends GameObject {
     this.hFrames = hFrames ?? 1;
     this.VFrames = VFrames ?? 1;
     this.currentFrame = currentFrame ?? 0;
+    this.direction = direction ?? "vertical";
 
-    this.animations = animations ?? null;
+    this.animations = animations ?? {
+      default: {
+        x: 0,
+        y: 0,
+        width: this.resource.image.width / this.VFrames,
+        height: this.resource.image.height / this.hFrames,
+        frameCount: this.VFrames * this.hFrames,
+      },
+    };
 
-    // Initialize dimensions - will be calculated when image loads
-    // For now, use default values or calculate if image is already loaded
-    if (this.resource.isLoaded && this.resource.image.width > 0) {
-      this.width = (this.resource.image.width / this.VFrames) * this.scale;
-      this.height = (this.resource.image.height / this.hFrames) * this.scale;
-      this.frameSize = frameSize ?? {
-        x: this.resource.image.width / this.VFrames,
-        y: this.resource.image.height / this.hFrames,
-      };
-    } else {
-      // Default values until image loads
-      this.width = 16 * this.scale;
-      this.height = 16 * this.scale;
-      this.frameSize = frameSize ?? { x: 16, y: 16 };
+    this.currentSprite = currentSprite
+      ? this.animations[currentSprite]
+      : this.animations[Object.keys(this.animations)[0]]; // Lấy cái đầu tiên (thường là 'default')
+
+    // Kích thước hiển thị trên màn hình (Destination Size)
+    this.width = 0;
+    this.height = 0;
+    this.elaspedTime = 0;
+    this.halfWidth = this.width / 2;
+  }
+
+  updateDimensions() {
+    if (!this.resource.isLoaded) {
+      return;
     }
 
-    this.frameMap = new Map(); //store the frmae
-    this.halfWidth = this.width / 2;
-    this.elaspedTime = 0;
-    this.currentSprite = currentSprite ?? null;
+    if (!this.currentSprite.width) {
+      this.currentSprite.width = this.resource.image.width / this.VFrames;
+      this.currentSprite.height = this.currentSprite.width / this.hFrames;
+    }
+
+    // Kích thước vẽ ra màn hình (Destination Size) = Source * Scale
+    this.width = this.currentSprite.width * this.scale;
+    this.height = this.currentSprite.height * this.scale;
   }
 
   draw(ctx) {
@@ -52,54 +65,40 @@ export class Sprite extends GameObject {
     }
 
     // Update dimensions if they weren't set correctly during construction
-    if (this.resource.image.width > 0 && this.resource.image.height > 0) {
-      this.width = (this.resource.image.width / this.VFrames) * this.scale;
-      this.height = (this.resource.image.height / this.hFrames) * this.scale;
-      this.halfWidth = this.width / 2;
-    }
 
-    // create CropBox
-    const cropBox = {
-      position: {
-        x: 0,
-        y: 0,
-      },
-      width: this.resource.image.width / this.VFrames,
-      height: this.resource.image.height / this.hFrames,
-    };
+    this.updateDimensions();
 
-    // // // draw out the rectangel
-    // ctx.fillStyle = "rgba(0,255,0,0.2";
-    // ctx.fillRect(
-    //   this.position.x + HALF_TILE - this.halfWidth,
-    //   this.position.y + TILE_SIZE - this.height,
-    //   this.width,
-    //   this.height
-    // );
-
-    if (!this.animations) {
-      ctx.drawImage(
-        this.resource.image,
-        this.position.x + HALF_TILE - this.halfWidth,
-        this.position.y + TILE_SIZE - this.height,
-        this.width,
-        this.height
-      );
-    } else {
-      // draw sprite
-      ctx.drawImage(
-        this.resource.image,
-        this.currentSprite.x,
+    // TINH TOAN VIJ TRI CAT
+    let frameX, frameY, destX, destY;
+    if (this.direction == "vertical") {
+      frameX = this.currentSprite.x;
+      frameY =
         this.currentSprite.y +
-          (this.currentSprite.height * this.currentFrame + 0.5),
-        this.currentSprite.width,
-        this.currentSprite.height,
-        this.position.x + HALF_TILE - this.halfWidth,
-        this.position.y + TILE_SIZE - this.height,
-        this.width,
-        this.height
-      );
+        this.currentFrame * this.currentSprite.height +
+        0.5;
+    } else {
+      frameX =
+        this.currentSprite.x + this.currentFrame * this.currentSprite.width;
+      frameY = this.currentSprite.y;
     }
+
+    // TINH TOAN VIJ TRI VE
+
+    destX = this.position.x + HALF_TILE - this.width / 2;
+    destY = this.position.y + TILE_SIZE - this.height;
+
+    // VE
+    ctx.drawImage(
+      this.resource.image,
+      frameX,
+      frameY,
+      this.currentSprite.width,
+      this.currentSprite.height,
+      destX,
+      destY,
+      this.width,
+      this.height
+    );
   }
 
   update(deltaTime) {
@@ -116,13 +115,12 @@ export class Sprite extends GameObject {
     }
   }
 
-  // updateFrame(deltaTime) {
-  //   // count frame troi qua (ham requestAnimation 60frames/s)
-  //   this.elapsedFrames += deltaTime;
-
-  //   if (this.elapsedFrames % this.frameBuffer == 0) {
-  //     if (this.currentFrame < this.frameRate - 1) this.currentFrame++;
-  //     else this.currentFrame = 0;
-  //   }
-  // }
+  setAnimation(key) {
+    // chuyen frame khi current Frame k phai la frame can chuyen
+    if (this.animations[key] && this.currentSprite !== this.animations[key]) {
+      this.currentSprite = this.animations[key];
+      this.currentFrame = 0; // Reset về frame đầu khi đổi hành động
+      this.elaspedTime = 0;
+    }
+  }
 }

@@ -94,7 +94,6 @@ export class Hero extends GameObject {
 
   draw(ctx) {
     let alphaGlobal = this.getHitted ? 0.2 : 1;
-    console.log({ alphaGlobal });
     // draw debug
     super.draw(ctx);
     // draw children
@@ -104,14 +103,14 @@ export class Hero extends GameObject {
       ctx.globalAlpha = alphaGlobal;
     }
 
-    // draw attackBox
-    ctx.fillStyle = "rgba(0,0,255, 0.4)";
-    ctx.fillRect(
-      this.attackBox.position.x,
-      this.attackBox.position.y,
-      this.attackBox.width,
-      this.attackBox.height
-    );
+    // // draw attackBox
+    // ctx.fillStyle = "rgba(0,0,255, 0.4)";
+    // ctx.fillRect(
+    //   this.attackBox.position.x,
+    //   this.attackBox.position.y,
+    //   this.attackBox.width,
+    //   this.attackBox.height
+    // );
 
     if (this.isAttacking) {
       this.weaponOffsets.UP.zIndex = -1;
@@ -182,19 +181,23 @@ export class Hero extends GameObject {
 
       switch (this.facingDirection) {
         case UP:
-          this.body.currentSprite = this.body.animations.attackUp;
+          this.body.setAnimation("attackUp");
+
           break;
 
         case DOWN:
-          this.body.currentSprite = this.body.animations.attackDown;
+          this.body.setAnimation("attackDown");
+
           break;
 
         case RIGHT:
-          this.body.currentSprite = this.body.animations.attackRight;
+          this.body.setAnimation("attackRight");
+
           break;
 
         case LEFT:
-          this.body.currentSprite = this.body.animations.attackLeft;
+          this.body.setAnimation("attackLeft");
+
           break;
       }
     }
@@ -202,7 +205,9 @@ export class Hero extends GameObject {
 
   getHitedByEnemy(damage) {
     this.getHitted = true;
-    this.health -= damage;
+    if (!this.invincible) {
+      this.health -= damage;
+    }
 
     console.log("HERO HEALTH: ", this.health);
   }
@@ -210,16 +215,18 @@ export class Hero extends GameObject {
   resetSprite() {
     switch (this.facingDirection) {
       case UP:
-        this.body.currentSprite = this.body.animations.walkUp;
+        this.body.setAnimation("walkUp");
         break;
       case DOWN:
-        this.body.currentSprite = this.body.animations.walkDown;
+        this.body.setAnimation("walkDown");
         break;
       case LEFT:
-        this.body.currentSprite = this.body.animations.walkLeft;
+        this.body.setAnimation("walkLeft");
+
         break;
       case RIGHT:
-        this.body.currentSprite = this.body.animations.walkRight;
+        this.body.setAnimation("walkRight");
+
         break;
     }
   }
@@ -251,21 +258,21 @@ export class Hero extends GameObject {
     if (this.game.input.lastKey === UP) {
       this.facingDirection = UP;
       this.position.y -= this.speed;
-      this.body.currentSprite = this.body.animations.walkUp;
+      this.body.setAnimation("walkUp");
       this.body.currentSprite.frameCount = 4;
     } else if (this.game.input.lastKey === DOWN) {
       this.facingDirection = DOWN;
       this.position.y += this.speed;
-      this.body.currentSprite = this.body.animations.walkDown;
+      this.body.setAnimation("walkDown");
       this.body.currentSprite.frameCount = 4;
     } else if (this.game.input.lastKey === LEFT) {
       this.facingDirection = LEFT;
       this.position.x -= this.speed;
-      this.body.currentSprite = this.body.animations.walkLeft;
+      this.body.setAnimation("walkLeft");
       this.body.currentSprite.frameCount = 4;
     } else if (this.game.input.lastKey === RIGHT) {
       this.facingDirection = RIGHT;
-      this.body.currentSprite = this.body.animations.walkRight;
+      this.body.setAnimation("walkRight");
       this.position.x += this.speed;
       this.body.currentSprite.frameCount = 4;
     } else if (this.game.input.lastKey === ATTACK) {
