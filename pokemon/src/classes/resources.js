@@ -11,6 +11,10 @@ class Resources {
       // enemies
       enemy1: "/data/Images/enemies/enemy1.png",
       enemy2: "/data/Images/enemies/enemy2.png",
+      enemy3: "/data/Images/enemies/enemy3.png",
+      enemy4: "/data/Images/enemies/enemy4.png",
+      enemy5: "/data/Images/enemies/enemy5.png",
+      enemy6: "/data/Images/enemies/enemy6.png",
 
       // Weapon:
       weapon1: "/data/Images/weapons/katana.png",

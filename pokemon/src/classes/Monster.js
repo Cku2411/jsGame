@@ -36,6 +36,21 @@ export class Monster extends GameObject {
 
     this.originalPosition = new Vector2(position.x, position.y);
 
+    // Damage options
+    this.hitbox = {
+      position: this.position,
+      width: this.body.width,
+      height: this.body.height,
+    };
+
+    this.maxHealth = 100;
+    this.health = this.maxHealth;
+    this.isHitted = false;
+    this.invincible = false;
+    this.hitCooldown = 1000;
+    this.hitElapsed = 0;
+    this.isDead = false;
+
     // setup patrolling
     this.patrolRadius = 100;
     this.moveTarget = null;
@@ -48,8 +63,23 @@ export class Monster extends GameObject {
 
   draw(ctx) {
     // draw debug
+    if (this.invincible) {
+      // hiệu ứng blink
+      const blinkInterval = 50;
+      const blinkOn = Math.floor(this.hitElapsed / blinkInterval) % 2 == 0;
+
+      // alpha giamr daan
+      const alphaProgress = 1 - this.hitElapsed / this.hitCooldown;
+
+      ctx.save();
+      ctx.globalAlpha = blinkOn ? alphaProgress : 0;
+    }
     super.draw(ctx);
     this.children.forEach((child) => child.draw(ctx));
+
+    if (this.invincible) {
+      ctx.restore();
+    }
 
     // (Debug) Vẽ vùng tuần tra để dễ nhìn
     if (this.game.debug) {
@@ -66,9 +96,44 @@ export class Monster extends GameObject {
     }
   }
 
+  receiveDamage(damage) {
+    // neu chua dinh doan thi return
+    if (!this.isHitted) return;
+
+    // distract and change state
+
+    this.isHitted = true;
+    if (!this.invincible) {
+      this.health -= damage;
+    }
+    console.log("MONSTER HEALT: ", this.health);
+
+    if (this.health <= 0) {
+      this.die();
+    }
+  }
+
+  die() {
+    console.log("Monster died");
+    this.isDead = true;
+  }
+
   update(deltaTime) {
     this.children.forEach((child) => child.update(deltaTime));
     this.randomMove(deltaTime);
+
+    // handle get hitted
+    this.hitbox.position = this.position;
+    if (this.isHitted) {
+      this.hitElapsed += deltaTime;
+      this.invincible = true;
+      if (this.hitElapsed >= this.hitCooldown) {
+        this.isHitted = false;
+        this.invincible = false;
+        // reset
+        this.hitElapsed = 0;
+      }
+    }
   }
 
   pickRandomTarget() {

@@ -5,6 +5,7 @@ import { Vector2 } from "./utils/vector2.js";
 import { Monster } from "./classes/Monster.js";
 import { resources } from "./classes/resources.js";
 import { Weapon } from "./classes/Weapon.js";
+import { isCollision } from "./utils/utils.js";
 
 export const zoom = 4;
 export const TILE_SIZE = 48;
@@ -63,13 +64,37 @@ class Game {
       game: this,
     });
 
+    const enemy3 = new Monster({
+      resource: resources.images.enemy3,
+      position: new Vector2(32 * TILE_SIZE, 25 * TILE_SIZE),
+      game: this,
+    });
+
+    const enemy4 = new Monster({
+      resource: resources.images.enemy4,
+      position: new Vector2(34 * TILE_SIZE, 22 * TILE_SIZE),
+      game: this,
+    });
+
+    const enemy5 = new Monster({
+      resource: resources.images.enemy5,
+      position: new Vector2(36 * TILE_SIZE, 25 * TILE_SIZE),
+      game: this,
+    });
+
+    const enemy6 = new Monster({
+      resource: resources.images.enemy6,
+      position: new Vector2(38 * TILE_SIZE, 25 * TILE_SIZE),
+      game: this,
+    });
+
     const weapon1 = new Weapon({
       resource: resources.images.weapon1,
       position: new Vector2(26 * TILE_SIZE, 21 * TILE_SIZE),
       game: this,
     });
 
-    this.enemies.push(enemy1, enemy2);
+    this.enemies.push(enemy1, enemy2, enemy3, enemy4, enemy5, enemy6);
     this.items.push(weapon1);
   }
 
@@ -84,6 +109,25 @@ class Game {
       const enemy = this.enemies[i];
       enemy.update(deltaTime);
       enemy.draw(ctx);
+      // check enemy collision
+      if (isCollision({ object1: this.hero.body, object2: enemy.hitbox })) {
+        console.log("ENEMY ATTAK HEROS");
+        this.hero.getHitted = true;
+        this.hero.getHitedByEnemy(45);
+      }
+      if (
+        this.hero.isAttacking &&
+        isCollision({ object1: this.hero.attackBox, object2: enemy.hitbox })
+      ) {
+        console.log("AHHH, GET HITTED");
+        enemy.isHitted = true;
+        enemy.receiveDamage(25);
+      }
+
+      if (enemy.isDead) {
+        // remove fromo array
+        this.enemies.splice(i, 1);
+      }
     }
 
     for (let i = this.items.length - 1; i >= 0; i--) {

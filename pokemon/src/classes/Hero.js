@@ -64,7 +64,17 @@ export class Hero extends GameObject {
       LEFT: { startAngle: 290, endAngle: 210, pivotOffset: { x: -10, y: 40 } },
       RIGHT: { startAngle: -30, endAngle: 60, pivotOffset: { x: 60, y: 40 } },
     };
+
     // this.addChild(this.weapon);
+
+    this.attackBox = {
+      position: {
+        x: this.position.x + 48,
+        y: this.position.y,
+      },
+      width: 48,
+      height: 48,
+    };
 
     this.facingDirection = DOWN;
 
@@ -73,12 +83,35 @@ export class Hero extends GameObject {
     this.attackElapsed = 0;
 
     this.speed = 4;
+
+    // COMBAT
+    this.health = 1000;
+    this.getHitted = false;
+    this.getHittedCoolDow = 500;
+    this.getHittedElapsed = 0;
+    this.invincible = false;
   }
 
   draw(ctx) {
+    let alphaGlobal = this.getHitted ? 0.2 : 1;
+    console.log({ alphaGlobal });
     // draw debug
     super.draw(ctx);
     // draw children
+
+    if (this.getHitted) {
+      ctx.save();
+      ctx.globalAlpha = alphaGlobal;
+    }
+
+    // draw attackBox
+    ctx.fillStyle = "rgba(0,0,255, 0.4)";
+    ctx.fillRect(
+      this.attackBox.position.x,
+      this.attackBox.position.y,
+      this.attackBox.width,
+      this.attackBox.height
+    );
 
     if (this.isAttacking) {
       this.weaponOffsets.UP.zIndex = -1;
@@ -91,6 +124,10 @@ export class Hero extends GameObject {
 
     if (this.weaponOffsets[this.facingDirection].zIndex == 1) {
       this.drawWeapon(ctx);
+    }
+
+    if (this.getHitted) {
+      ctx.restore();
     }
   }
 
@@ -127,6 +164,7 @@ export class Hero extends GameObject {
       // (Debug) Vẽ một chấm đỏ để biết điểm trục đang ở đâu
       ctx.fillStyle = "red";
       ctx.fillRect(-1, -1, 2, 2);
+
       ctx.restore();
     } else {
       ctx.save();
@@ -162,6 +200,13 @@ export class Hero extends GameObject {
     }
   }
 
+  getHitedByEnemy(damage) {
+    this.getHitted = true;
+    this.health -= damage;
+
+    console.log("HERO HEALTH: ", this.health);
+  }
+
   resetSprite() {
     switch (this.facingDirection) {
       case UP:
@@ -182,10 +227,17 @@ export class Hero extends GameObject {
   update(deltaTime) {
     this.children.forEach((child) => child.update(deltaTime));
 
+    if (this.getHitted) {
+      this.getHittedElapsed += deltaTime;
+      if (this.getHittedElapsed >= this.getHittedCoolDow) {
+        this.getHitted = false;
+        this.getHittedElapsed = 0;
+      }
+    }
+
     // handle attack time
     if (this.isAttacking && this.attackElapsed < this.attackDuration) {
       this.attackElapsed += deltaTime;
-      console.log(this.attackElapsed);
       // qua thoi gian thi rest
     } else if (this.isAttacking && this.attackElapsed >= this.attackDuration) {
       this.isAttacking = false;
@@ -204,8 +256,6 @@ export class Hero extends GameObject {
     } else if (this.game.input.lastKey === DOWN) {
       this.facingDirection = DOWN;
       this.position.y += this.speed;
-      console.log(this.position.y);
-
       this.body.currentSprite = this.body.animations.walkDown;
       this.body.currentSprite.frameCount = 4;
     } else if (this.game.input.lastKey === LEFT) {
@@ -222,6 +272,26 @@ export class Hero extends GameObject {
       this.attack();
     } else {
       this.body.currentSprite.frameCount = 1;
+    }
+
+    // Cập nhật attackBox dựa trên hướng hiện tại (luôn cập nhật, không chỉ khi di chuyển)
+    switch (this.facingDirection) {
+      case UP:
+        this.attackBox.position.y = this.position.y - 24;
+        this.attackBox.position.x = this.position.x;
+        break;
+      case DOWN:
+        this.attackBox.position.y = this.position.y + 24;
+        this.attackBox.position.x = this.position.x;
+        break;
+      case LEFT:
+        this.attackBox.position.x = this.position.x - 24;
+        this.attackBox.position.y = this.position.y;
+        break;
+      case RIGHT:
+        this.attackBox.position.x = this.position.x + 24;
+        this.attackBox.position.y = this.position.y;
+        break;
     }
 
     // update this.center
