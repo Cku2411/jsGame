@@ -7,6 +7,7 @@ import { resources } from "./classes/resources.js";
 import { Weapon } from "./classes/Weapon.js";
 import { isCollision } from "./utils/utils.js";
 import { Heart } from "./classes/Heart.js";
+import { Weather } from "./classes/weather.js";
 
 export const zoom = 4;
 export const TILE_SIZE = 48;
@@ -41,6 +42,16 @@ canvas.height = CANVAS_HEIGHT;
 class Game {
   constructor() {
     this.world = new Word();
+    this.weathers = {
+      snows: [
+        new Weather({
+          position: new Vector2(40, 40),
+          resouce: resources.images.snow,
+          game: this,
+          scale: 5,
+        }),
+      ],
+    };
     this.hero = new Hero({
       position: new Vector2(25 * TILE_SIZE, 20 * TILE_SIZE),
       game: this,
@@ -66,7 +77,7 @@ class Game {
         position: new Vector2(90, 20),
         resourse: resources.images.heart,
         game: this,
-        currentFrame: 2,
+        currentFrame: 4,
       }),
     ];
 
@@ -128,7 +139,7 @@ class Game {
     this.items.push(weapon1, weapon2);
   }
 
-  render(deltaTime) {
+  render(deltaTime, elapsedTime) {
     this.world.drawBackground(ctx);
     this.hero.update(deltaTime);
     if (this.debug) this.world.drawGrid(ctx);
@@ -148,6 +159,9 @@ class Game {
         console.log("ENEMY ATTAK HEROS");
         this.hero.getHitted = true;
         this.hero.getHitedByEnemy(1);
+        if (this.hero.health <= 0) {
+          console.log("GAME OVER");
+        }
       }
       if (
         this.hero.isAttacking &&
@@ -169,6 +183,20 @@ class Game {
       item.update(deltaTime);
       item.draw(ctx);
     }
+
+    // SNOWW
+
+    for (let i = this.weathers.snows.length - 1; i >= 0; i--) {
+      const snow = this.weathers.snows[i];
+      snow.update(deltaTime); // Update logic (x += 0.5)
+      snow.draw(ctx); // Draw (sẽ tự động ăn theo ctx.translate của camera)
+
+      // Xoá tuyết khi alpha hết
+      if (snow.globalAlpha <= 0) {
+        this.weathers.snows.splice(i, 1);
+      }
+    }
+    // ===
 
     this.world.drawForeground(ctx);
 
@@ -203,6 +231,7 @@ class Game {
 
 let game = null;
 let lastFrameTimeStart = 0;
+let snowTimer = 0;
 
 //lastFrameTimeEnd là tham số truyền vòa từ hàm requestAnimation
 function animate(lastFrameTimeEnd) {
@@ -211,10 +240,17 @@ function animate(lastFrameTimeEnd) {
   // find delta time (time between frames)
   const deltaTime = lastFrameTimeEnd - lastFrameTimeStart;
   lastFrameTimeStart = lastFrameTimeEnd;
+  snowTimer += deltaTime;
 
   ctx.save();
   ctx.translate(-horizontalScrollDistance, -verticalSrollDistance);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(
+    horizontalScrollDistance,
+    verticalSrollDistance,
+    canvas.width,
+    canvas.height
+  );
 
   if (game) {
     game.render(deltaTime);
@@ -231,6 +267,26 @@ function animate(lastFrameTimeEnd) {
   if (game) {
     game.renderFPS(ctx);
     game.hearts.forEach((heart) => heart.draw(ctx));
+
+    // draw weather
+
+    if (snowTimer >= 500) {
+      const camX = horizontalScrollDistance || 0;
+      const camY = verticalSrollDistance || 0;
+
+      game.weathers.snows.push(
+        new Weather({
+          position: new Vector2(
+            Math.random() * CANVAS_WIDTH + camX,
+            Math.random() * CANVAS_HEIGHT + camY
+          ),
+          resouce: resources.images.snow,
+          game: game,
+          scale: 5,
+        })
+      );
+      snowTimer = 0;
+    }
   }
 }
 

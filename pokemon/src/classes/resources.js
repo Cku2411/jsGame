@@ -22,6 +22,9 @@ class Resources {
 
       // health
       heart: "/data/Images/Ui/Heart.png",
+
+      // weather
+      snow: "/data/Images/weather/Snow.png",
     };
 
     this.images = {};

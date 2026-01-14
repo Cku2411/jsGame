@@ -97,7 +97,7 @@ export class Monster extends GameObject {
 
   receiveDamage(damage) {
     // neu chua dinh doan thi return
-    if (!this.isHitted) return;
+    // if (!this.isHitted) return;
 
     // distract and change state
 
