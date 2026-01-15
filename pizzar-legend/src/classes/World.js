@@ -1,51 +1,55 @@
 import { COLS, ROWS, TILE_SIZE } from "../const.js";
-import { GameObject } from "./GameObjects.js";
+import { OverworldMap } from "./OverworldMaps.js";
 
 export class World {
-  constructor({ element }) {
-    this.element = element;
-    this.canvas = this.element.getElementById("board");
+  constructor({ document }) {
+    this.document = document;
+    this.canvas = this.document.getElementById("board");
     this.ctx = this.canvas.getContext("2d");
+    this.map = null;
+  }
+
+  startGameLoop() {
+    const update = () => {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      // Draw background
+      this.map.drawBackground(this.ctx);
+
+      // Draw gameObjects
+      Object.values(this.map.gameObjects).forEach((obj) => {
+        // obj.position.x += 0.2;
+        obj.sprite.draw(this.ctx);
+      });
+
+      // draw foreground
+      this.map.drawForeground(this.ctx);
+
+      requestAnimationFrame(update);
+    };
+
+    update();
   }
 
   init() {
-    const image = new Image();
-    console.log({ image });
-
-    image.src = "./img/maps/DemoLower.png";
-    image.onload = () => {
-      this.ctx.drawImage(image, 0, 0);
-    };
-
-    // Place some GameObject
-
-    const hero = new GameObject({ position: { x: 5, y: 6 } });
-    const npc1 = new GameObject({
-      position: { x: 7, y: 9 },
-      Imgsrc: "./img/characters/people/npc1.png",
+    // creat map
+    const mapName = "Kitchen";
+    this.map = new OverworldMap({
+      gameObjects: window.OverworldMaps[mapName].gameObjects,
+      backgroundSrc: window.OverworldMaps[mapName].backgroundLayer,
+      foregroundSrc: window.OverworldMaps[mapName].foregroundLayer,
     });
 
-    // teset, cho 0,2s cho anh load het
-
-    setTimeout(() => {
-      hero.sprite.draw(this.ctx);
-      npc1.sprite.draw(this.ctx);
-    }, 200);
-
-    // this.drawGrid();
+    this.startGameLoop();
+    this.drawGrid();
   }
 
-  // drawGrid() {
-  //   for (let row = 0; row < ROWS; row++) {
-  //     for (let col = 0; col < COLS; col++) {
-  //       this.ctx.strokeStlye = "red";
-  //       this.ctx.strokeRect(
-  //         col * TILE_SIZE,
-  //         row * TILE_SIZE,
-  //         TILE_SIZE,
-  //         TILE_SIZE
-  //       );
-  //     }
-  //   }
-  // }
+  drawGrid() {
+    for (let row = 0; row < ROWS; row++) {
+      for (let col = 0; col < COLS; col++) {
+        this.ctx.strokeStyle = "gray";
+        this.ctx.lineWidth = 1;
+        this.ctx.strokeRect(col * 16 + 0.5, row * 16 + 0.5, 16, 16);
+      }
+    }
+  }
 }

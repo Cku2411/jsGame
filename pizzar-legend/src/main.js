@@ -1,13 +1,38 @@
 import { World } from "./classes/World.js";
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./const.js";
+import { GameObject } from "./classes/GameObjects.js";
 
-// const canvas = document.getElementById("board");
-// const ctx = canvas.getContext("2d");
+// ==DEFINE WORLD
 
-// canvas.width = CANVAS_WIDTH;
-// canvas.height = CANVAS_HEIGHT;
+window.OverworldMaps = {
+  DemoRoom: {
+    backgroundLayer: "./img/maps/DemoLower.png",
+    foregroundLayer: "./img/maps/DemoUpper.png",
+    gameObjects: {
+      hero: new GameObject({ position: { x: 5, y: 6 } }),
+      npc1: new GameObject({
+        position: { x: 7, y: 9 },
+        Imgsrc: "./img/characters/people/npc1.png",
+      }),
+    },
+  },
 
-const game = new World({ element: document });
+  Kitchen: {
+    backgroundLayer: "./img/maps/KitchenLower.png",
+    foregroundLayer: "./img/maps/KitchenUpper.png",
+    gameObjects: {
+      hero: new GameObject({ position: { x: 5, y: 6 } }),
+      npcA: new GameObject({
+        position: { x: 7, y: 9 },
+        Imgsrc: "./img/characters/people/npc1.png",
+      }),
+      npcB: new GameObject({
+        position: { x: 8, y: 7 },
+        Imgsrc: "./img/characters/people/npc2.png",
+      }),
+    },
+  },
+};
+
+// CREATE GAME
+const game = new World({ document: document });
 game.init();
-// ==RUNGAME
-function animate() {}
