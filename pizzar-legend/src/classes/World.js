@@ -30,9 +30,9 @@ export class World {
     update();
   }
 
-  init() {
+  init(mapName) {
     // creat map
-    const mapName = "Kitchen";
+    // const mapName = "DemoRoom";
     this.map = new OverworldMap({
       gameObjects: window.OverworldMaps[mapName].gameObjects,
       backgroundSrc: window.OverworldMaps[mapName].backgroundLayer,

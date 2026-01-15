@@ -2,6 +2,7 @@ import { World } from "./classes/World.js";
 import { GameObject } from "./classes/GameObjects.js";
 
 // ==DEFINE WORLD
+let mapName = "Kitchen";
 
 window.OverworldMaps = {
   DemoRoom: {
@@ -35,4 +36,11 @@ window.OverworldMaps = {
 
 // CREATE GAME
 const game = new World({ document: document });
-game.init();
+game.init(mapName);
+
+const button = document.getElementById("changeMap");
+const changeMap = () => {
+  mapName = mapName == "DemoRoom" ? "Kitchen" : "DemoRoom";
+  game.init(mapName);
+};
+button.addEventListener("click", changeMap);
