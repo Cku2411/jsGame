@@ -1,4 +1,5 @@
 import { COLS, ROWS, TILE_SIZE } from "../const.js";
+import { GameObject } from "./GameObjects.js";
 
 export class World {
   constructor({ element }) {
@@ -8,20 +9,28 @@ export class World {
   }
 
   init() {
-    console.log("HELLOOOO", this);
     const image = new Image();
+    console.log({ image });
+
     image.src = "./img/maps/DemoLower.png";
     image.onload = () => {
       this.ctx.drawImage(image, 0, 0);
     };
 
-    const x = 1;
-    const y = 4;
-    const hero = new Image();
-    hero.src = "./img/characters/people/hero.png";
-    hero.onload = () => {
-      this.ctx.drawImage(hero, 0, 0, 32, 32, x * 16, y * 16, 32, 32);
-    };
+    // Place some GameObject
+
+    const hero = new GameObject({ position: { x: 5, y: 6 } });
+    const npc1 = new GameObject({
+      position: { x: 7, y: 9 },
+      Imgsrc: "./img/characters/people/npc1.png",
+    });
+
+    // teset, cho 0,2s cho anh load het
+
+    setTimeout(() => {
+      hero.sprite.draw(this.ctx);
+      npc1.sprite.draw(this.ctx);
+    }, 200);
 
     // this.drawGrid();
   }
