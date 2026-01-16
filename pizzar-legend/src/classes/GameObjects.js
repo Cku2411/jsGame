@@ -1,8 +1,9 @@
 import { Sprite } from "./Sprite.js";
 
 export class GameObject {
-  constructor({ position, Imgsrc, animations, currentAnimation }) {
+  constructor({ position, Imgsrc, animations, currentAnimation, direction }) {
     this.position = position || { x: 0, y: 0 };
+    this.direction = direction || "down";
     this.sprite = new Sprite({
       gameObject: this,
       animations,
@@ -10,4 +11,6 @@ export class GameObject {
       Imgsrc: Imgsrc || "./img/characters/people/hero.png",
     });
   }
+
+  update() {}
 }

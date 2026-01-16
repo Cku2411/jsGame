@@ -1,4 +1,5 @@
 import { COLS, ROWS, TILE_SIZE } from "../const.js";
+import { DirectionInput } from "./Input.js";
 import { OverworldMap } from "./OverworldMaps.js";
 
 export class World {
@@ -17,6 +18,7 @@ export class World {
 
       // Draw gameObjects
       Object.values(this.map.gameObjects).forEach((obj) => {
+        obj.update({ key: this.input.direction });
         // obj.position.x += 0.2;
         obj.sprite.draw(this.ctx);
       });
@@ -38,6 +40,9 @@ export class World {
       backgroundSrc: window.OverworldMaps[mapName].backgroundLayer,
       foregroundSrc: window.OverworldMaps[mapName].foregroundLayer,
     });
+
+    this.input = new DirectionInput();
+    this.input.init();
 
     this.startGameLoop();
     this.drawGrid();
