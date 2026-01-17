@@ -81,11 +81,6 @@ export class Sprite {
   }
 
   draw(ctx, cameraPerson) {
-    // const x =
-    //   this.gameObject.position.x - 8 + utils.grid(10) - cameraPerson.position.x;
-    // const y =
-    //   this.gameObject.position.y - 18 + utils.grid(6) - cameraPerson.position.y;
-
     const cameraX =
       this.gameObject.position.x -
       8 +
@@ -112,9 +107,9 @@ export class Sprite {
         32,
         32
       );
-    // draw rectange debug
-    ctx.fillStyle = "rgba(0,0,255,0.2)";
-    ctx.fillRect(cameraX, cameraY, 32, 32);
+    // // draw rectange debug
+    // ctx.fillStyle = "rgba(0,0,255,0.2)";
+    // ctx.fillRect(cameraX, cameraY, 32, 32);
 
     this.updateAnimationProgress();
   }

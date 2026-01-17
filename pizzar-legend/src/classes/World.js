@@ -19,6 +19,8 @@ export class World {
       walls: window.OverworldMaps[mapName].walls,
     });
 
+    this.map.getObjectReady();
+
     this.input = new DirectionInput();
     this.input.init();
 
@@ -47,7 +49,7 @@ export class World {
         obj.sprite.draw(this.ctx, cameraPerson);
       });
 
-      // this.map.drawForeground(this.ctx, cameraPerson);
+      this.map.drawForeground(this.ctx, cameraPerson);
       this.debug && this.drawGrid();
 
       requestAnimationFrame(update);

@@ -25,7 +25,7 @@ export const utils = {
         y -= size;
         break;
       case "down":
-        y -= size;
+        y += size;
         break;
 
       default:

@@ -10,6 +10,14 @@ export class GameObject {
       currentAnimation,
       Imgsrc: Imgsrc || "./img/characters/people/hero.png",
     });
+
+    this.isReady = false;
+  }
+
+  ready(map) {
+    this.isReady = true;
+    // add collison for all objects
+    map.addWall(this.position.x, this.position.y);
   }
 
   update() {}

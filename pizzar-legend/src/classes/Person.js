@@ -12,21 +12,41 @@ export class Person extends GameObject {
       left: ["x", -1],
       right: ["x", 1],
     };
-
-    console.log(this.position);
   }
 
   update(state) {
-    // onlymove if hero
-    this.isPlayerControlled && this.updatePositon();
+    if (this.movingProgressRemaining > 0) {
+      this.isPlayerControlled && this.updatePositon();
+    } else {
+      // More case for starting to walk will come here
+      //
 
-    if (this.movingProgressRemaining == 0 && state.direction) {
-      this.direction = state.direction;
-      // check collision with map
-      state.map.isSpaceTaken(this.position.x, this.position.y, this.direction);
+      // Case: We're keyboard ready and have an arrow pressed
+      if (this.movingProgressRemaining == 0 && state.direction) {
+        this.startAction(state, {
+          type: "walk",
+        });
+      }
+
+      // update animation
+      this.updateSprite(state);
+    }
+  }
+
+  startAction(state, action) {
+    this.direction = state.direction;
+
+    if (action.type == "walk") {
+      // stop here if space is not free
+      if (
+        state.map.isSpaceTaken(this.position.x, this.position.y, this.direction)
+      )
+        return;
+
+      // ready to walk
+      state.map.moveWall(this.position.x, this.position.y, this.direction);
       this.movingProgressRemaining = 16;
     }
-    this.updateSprite(state);
   }
 
   updatePositon() {
@@ -37,18 +57,13 @@ export class Person extends GameObject {
     }
   }
 
-  updateSprite(state) {
-    if (
-      this.isPlayerControlled &&
-      this.movingProgressRemaining == 0 &&
-      !state.direction
-    ) {
-      this.sprite.setAnimation("idle-" + this.direction);
+  updateSprite() {
+    if (this.movingProgressRemaining > 0) {
+      this.sprite.setAnimation("walk-" + this.direction);
       return;
     }
 
-    if (this.movingProgressRemaining > 0) {
-      this.sprite.setAnimation("walk-" + this.direction);
-    }
+    this.sprite.setAnimation("idle-" + this.direction);
+    return;
   }
 }

@@ -10,19 +10,39 @@ export class OverworldMap {
 
     this.foreground = new Image();
     this.foreground.src = foregroundSrc;
-
-    console.log(this.walls);
   }
 
   isSpaceTaken(currentX, currentY, direction) {
     const { x, y } = utils.nextPosition(currentX, currentY, direction);
 
-    console.log({ x, y });
-
     // rcheck if coordinate in wallmap
     console.log(this.walls[`${x},${y}`] || false);
 
     return this.walls[`${x},${y}`] || false;
+  }
+
+  getObjectReady() {
+    Object.values(this.gameObjects).forEach((obj) => {
+      // TODO: determent that this object is actually ready (mount)
+      obj.ready(this);
+    });
+
+    console.log("OBJECTS READY!!!");
+  }
+
+  addWall(x, y) {
+    this.walls[`${x},${y}`] = true;
+  }
+
+  removeWall(x, y) {
+    delete this.walls[`${x},${y}`];
+  }
+
+  moveWall(wasX, wasY, direction) {
+    this.removeWall(wasX, wasY);
+    // find new x,y
+    const { x, y } = utils.nextPosition(wasX, wasY, direction);
+    this.addWall(x, y);
   }
 
   drawBackground(ctx, cameraPerson) {

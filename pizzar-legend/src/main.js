@@ -23,6 +23,9 @@ window.OverworldMaps = {
 
     walls: {
       [utils.gridCoord(7, 6)]: true,
+      [utils.gridCoord(7, 7)]: true,
+      [utils.gridCoord(8, 6)]: true,
+      [utils.gridCoord(8, 7)]: true,
     },
   },
 
