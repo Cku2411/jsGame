@@ -28,16 +28,16 @@ export class OverworldMap {
   drawBackground(ctx, cameraPerson) {
     ctx.drawImage(
       this.background,
-      utils.grid(9) - cameraPerson.position.x,
-      utils.grid(7) - cameraPerson.position.y,
+      utils.grid(10.5) - cameraPerson.position.x,
+      utils.grid(6) - cameraPerson.position.y
     );
   }
 
   drawForeground(ctx, cameraPerson) {
     ctx.drawImage(
       this.foreground,
-      utils.grid(9) - cameraPerson.position.x,
-      utils.grid(7) - cameraPerson.position.y,
+      utils.grid(10.5) - cameraPerson.position.x,
+      utils.grid(6) - cameraPerson.position.y
     );
   }
 }

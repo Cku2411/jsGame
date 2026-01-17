@@ -5,13 +5,15 @@ export class Person extends GameObject {
     super({ position });
 
     this.isPlayerControlled = isPlayerControlled || false;
-    this.movingProgressRemaining = 16; //1title
+    this.movingProgressRemaining = 0; //1title
     this.directionUpdate = {
       up: ["y", -1],
       down: ["y", 1],
       left: ["x", -1],
       right: ["x", 1],
     };
+
+    console.log(this.position);
   }
 
   update(state) {

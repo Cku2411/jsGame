@@ -22,9 +22,7 @@ export class DirectionInput {
 
   init() {
     document.addEventListener("keydown", (e) => {
-      e.preventDefault();
-
-      if (e.code == "Enter") {
+      if (e.key == "Enter") {
         this.debug = true;
         return;
       }

@@ -81,17 +81,40 @@ export class Sprite {
   }
 
   draw(ctx, cameraPerson) {
-    const x =
-      this.gameObject.position.x - 8 + utils.grid(10) - cameraPerson.position.x;
-    const y =
-      this.gameObject.position.y - 18 + utils.grid(6) - cameraPerson.position.y;
+    // const x =
+    //   this.gameObject.position.x - 8 + utils.grid(10) - cameraPerson.position.x;
+    // const y =
+    //   this.gameObject.position.y - 18 + utils.grid(6) - cameraPerson.position.y;
 
-    this.isShadowLoaded && this.useShadow && ctx.drawImage(this.shadow, x, y);
+    const cameraX =
+      this.gameObject.position.x -
+      8 +
+      utils.grid(10.5) -
+      cameraPerson.position.x;
+    const cameraY =
+      this.gameObject.position.y - 16 + utils.grid(6) - cameraPerson.position.y;
+
+    this.isShadowLoaded &&
+      this.useShadow &&
+      ctx.drawImage(this.shadow, cameraX, cameraY);
 
     const [frameX, frameY] = this.frame;
 
     this.isLoaded &&
-      ctx.drawImage(this.image, frameX * 32, frameY * 32, 32, 32, x, y, 32, 32);
+      ctx.drawImage(
+        this.image,
+        frameX * 32,
+        frameY * 32,
+        32,
+        32,
+        cameraX,
+        cameraY,
+        32,
+        32
+      );
+    // draw rectange debug
+    ctx.fillStyle = "rgba(0,0,255,0.2)";
+    ctx.fillRect(cameraX, cameraY, 32, 32);
 
     this.updateAnimationProgress();
   }

@@ -11,44 +11,6 @@ export class World {
     this.map = null;
   }
 
-  startGameLoop() {
-    const update = () => {
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-      // toggle debug
-      if (this.input.debug) {
-        this.toggleDebug();
-        this.input.debug = false;
-      }
-
-      // Etabslish the camera person (center hero objects)
-      const cameraPerson = this.map.gameObjects.hero;
-
-      // Update object posiitons
-
-      // Draw gameObjects
-      Object.values(this.map.gameObjects).forEach((obj) => {
-        obj.update({ direction: this.input.direction, map: this.map });
-      });
-
-      // Draw background
-      this.map.drawBackground(this.ctx, cameraPerson);
-
-      // Draw gameObjects
-      Object.values(this.map.gameObjects).forEach((obj) => {
-        obj.sprite.draw(this.ctx, cameraPerson);
-      });
-
-      // draw foreground
-      this.map.drawForeground(this.ctx, cameraPerson);
-      this.debug && this.drawGrid();
-
-      requestAnimationFrame(update);
-    };
-
-    update();
-  }
-
   init(mapName) {
     this.map = new OverworldMap({
       gameObjects: window.OverworldMaps[mapName].gameObjects,
@@ -61,6 +23,37 @@ export class World {
     this.input.init();
 
     this.startGameLoop();
+  }
+
+  startGameLoop() {
+    const update = () => {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+      if (this.input.debug) {
+        this.toggleDebug();
+        this.input.debug = false;
+      }
+
+      // toa camera theo toa do person
+      const cameraPerson = this.map.gameObjects.hero;
+
+      Object.values(this.map.gameObjects).forEach((obj) => {
+        obj.update({ direction: this.input.direction, map: this.map });
+      });
+
+      this.map.drawBackground(this.ctx, cameraPerson);
+
+      Object.values(this.map.gameObjects).forEach((obj) => {
+        obj.sprite.draw(this.ctx, cameraPerson);
+      });
+
+      // this.map.drawForeground(this.ctx, cameraPerson);
+      this.debug && this.drawGrid();
+
+      requestAnimationFrame(update);
+    };
+
+    update();
   }
 
   drawGrid() {

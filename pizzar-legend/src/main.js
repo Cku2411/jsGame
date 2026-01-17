@@ -4,7 +4,7 @@ import { Person } from "./classes/Person.js";
 import { utils } from "./util.js";
 
 // ==DEFINE WORLD
-let mapName = "Kitchen";
+let mapName = "DemoRoom";
 
 window.OverworldMaps = {
   DemoRoom: {
@@ -12,7 +12,7 @@ window.OverworldMaps = {
     foregroundLayer: "./img/maps/DemoUpper.png",
     gameObjects: {
       hero: new Person({
-        position: { x: utils.grid(5), y: utils.grid(7) },
+        position: { x: utils.grid(5), y: utils.grid(6) },
         isPlayerControlled: true,
       }),
       npc1: new GameObject({
@@ -52,6 +52,7 @@ window.OverworldMaps = {
 const game = new World({ document: document });
 game.init(mapName);
 
+// BUTOON
 const button = document.getElementById("changeMap");
 const changeMap = () => {
   mapName = mapName == "DemoRoom" ? "Kitchen" : "DemoRoom";
