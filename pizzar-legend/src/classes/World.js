@@ -7,24 +7,41 @@ export class World {
     this.document = document;
     this.canvas = this.document.getElementById("board");
     this.ctx = this.canvas.getContext("2d");
+    this.debug = false;
     this.map = null;
   }
 
   startGameLoop() {
     const update = () => {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      // Draw background
-      this.map.drawBackground(this.ctx);
+
+      // toggle debug
+      if (this.input.debug) {
+        this.toggleDebug();
+        this.input.debug = false;
+      }
+
+      // Etabslish the camera person (center hero objects)
+      const cameraPerson = this.map.gameObjects.hero;
+
+      // Update object posiitons
 
       // Draw gameObjects
       Object.values(this.map.gameObjects).forEach((obj) => {
-        obj.update({ key: this.input.direction });
-        // obj.position.x += 0.2;
-        obj.sprite.draw(this.ctx);
+        obj.update({ direction: this.input.direction, map: this.map });
+      });
+
+      // Draw background
+      this.map.drawBackground(this.ctx, cameraPerson);
+
+      // Draw gameObjects
+      Object.values(this.map.gameObjects).forEach((obj) => {
+        obj.sprite.draw(this.ctx, cameraPerson);
       });
 
       // draw foreground
-      this.map.drawForeground(this.ctx);
+      this.map.drawForeground(this.ctx, cameraPerson);
+      this.debug && this.drawGrid();
 
       requestAnimationFrame(update);
     };
@@ -33,19 +50,17 @@ export class World {
   }
 
   init(mapName) {
-    // creat map
-    // const mapName = "DemoRoom";
     this.map = new OverworldMap({
       gameObjects: window.OverworldMaps[mapName].gameObjects,
       backgroundSrc: window.OverworldMaps[mapName].backgroundLayer,
       foregroundSrc: window.OverworldMaps[mapName].foregroundLayer,
+      walls: window.OverworldMaps[mapName].walls,
     });
 
     this.input = new DirectionInput();
     this.input.init();
 
     this.startGameLoop();
-    this.drawGrid();
   }
 
   drawGrid() {
@@ -56,5 +71,9 @@ export class World {
         this.ctx.strokeRect(col * 16 + 0.5, row * 16 + 0.5, 16, 16);
       }
     }
+  }
+
+  toggleDebug() {
+    this.debug = !this.debug;
   }
 }

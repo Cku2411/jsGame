@@ -1,7 +1,7 @@
 import { World } from "./classes/World.js";
 import { GameObject } from "./classes/GameObjects.js";
 import { Person } from "./classes/Person.js";
-import { grid } from "./util.js";
+import { utils } from "./util.js";
 
 // ==DEFINE WORLD
 let mapName = "Kitchen";
@@ -12,13 +12,17 @@ window.OverworldMaps = {
     foregroundLayer: "./img/maps/DemoUpper.png",
     gameObjects: {
       hero: new Person({
-        position: { x: grid(5), y: grid(6) },
+        position: { x: utils.grid(5), y: utils.grid(7) },
         isPlayerControlled: true,
       }),
       npc1: new GameObject({
-        position: { x: grid(7), y: grid(9) },
+        position: { x: utils.grid(7), y: utils.grid(9) },
         Imgsrc: "./img/characters/people/npc1.png",
       }),
+    },
+
+    walls: {
+      [utils.gridCoord(7, 6)]: true,
     },
   },
 
@@ -27,18 +31,20 @@ window.OverworldMaps = {
     foregroundLayer: "./img/maps/KitchenUpper.png",
     gameObjects: {
       hero: new Person({
-        position: { x: grid(5), y: grid(6) },
+        position: { x: utils.grid(5), y: utils.grid(6) },
         isPlayerControlled: true,
       }),
       npcA: new GameObject({
-        position: { x: grid(7), y: grid(9) },
+        position: { x: utils.grid(7), y: utils.grid(9) },
         Imgsrc: "./img/characters/people/npc1.png",
       }),
       npcB: new GameObject({
-        position: { x: grid(8), y: grid(7) },
+        position: { x: utils.grid(8), y: utils.grid(7) },
         Imgsrc: "./img/characters/people/npc2.png",
       }),
     },
+
+    walls: {},
   },
 };
 

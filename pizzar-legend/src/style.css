@@ -19,13 +19,14 @@ canvas {
   /* width: 352px;
   height: 198px; */
 
-  transform: scale(2);
+  /* transform: scale(2); */
   max-height: 100%;
   max-width: 100%;
 
   image-rendering: pixelated;
 }
 
-.header {
-  margin-bottom: 10px;
+.menu {
+  position: absolute;
+  /* margin-bottom: 10px; */
 }

@@ -1,6 +1,7 @@
 export class DirectionInput {
   constructor() {
     this.heldDirections = [];
+    this.debug = false;
 
     this.keyMap = {
       ArrowRight: "right",
@@ -21,6 +22,13 @@ export class DirectionInput {
 
   init() {
     document.addEventListener("keydown", (e) => {
+      e.preventDefault();
+
+      if (e.code == "Enter") {
+        this.debug = true;
+        return;
+      }
+
       const dir = this.keyMap[e.code];
 
       //   neu dir chua cho trong held thi push new dir to the top
@@ -30,6 +38,8 @@ export class DirectionInput {
     });
 
     document.addEventListener("keyup", (e) => {
+      e.preventDefault();
+
       const dir = this.keyMap[e.code];
       const index = this.heldDirections.indexOf(dir);
       if (index > -1) {

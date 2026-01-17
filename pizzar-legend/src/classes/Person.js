@@ -15,13 +15,16 @@ export class Person extends GameObject {
   }
 
   update(state) {
+    // onlymove if hero
     this.isPlayerControlled && this.updatePositon();
 
-    if (this.movingProgressRemaining == 0 && state.key) {
-      this.direction = state.key;
+    if (this.movingProgressRemaining == 0 && state.direction) {
+      this.direction = state.direction;
+      // check collision with map
+      state.map.isSpaceTaken(this.position.x, this.position.y, this.direction);
       this.movingProgressRemaining = 16;
-      this.updateSprite();
     }
+    this.updateSprite(state);
   }
 
   updatePositon() {
@@ -32,9 +35,14 @@ export class Person extends GameObject {
     }
   }
 
-  updateSprite() {
-    if (this.movingProgressRemaining == 0 && state.key) {
+  updateSprite(state) {
+    if (
+      this.isPlayerControlled &&
+      this.movingProgressRemaining == 0 &&
+      !state.direction
+    ) {
       this.sprite.setAnimation("idle-" + this.direction);
+      return;
     }
 
     if (this.movingProgressRemaining > 0) {

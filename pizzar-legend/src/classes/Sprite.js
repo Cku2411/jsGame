@@ -1,3 +1,5 @@
+import { utils } from "../util.js";
+
 export class Sprite {
   constructor({
     gameObject,
@@ -25,6 +27,10 @@ export class Sprite {
     // Config Animation and Initial State
     this.animations = animations || {
       "idle-down": [[0, 0]],
+      "idle-up": [[0, 2]],
+      "idle-right": [[0, 1]],
+      "idle-left": [[0, 3]],
+
       "walk-down": [
         [1, 0],
         [0, 0],
@@ -74,9 +80,12 @@ export class Sprite {
     }
   }
 
-  draw(ctx) {
-    const x = this.gameObject.position.x - 8;
-    const y = this.gameObject.position.y - 18;
+  draw(ctx, cameraPerson) {
+    const x =
+      this.gameObject.position.x - 8 + utils.grid(10) - cameraPerson.position.x;
+    const y =
+      this.gameObject.position.y - 18 + utils.grid(6) - cameraPerson.position.y;
+
     this.isShadowLoaded && this.useShadow && ctx.drawImage(this.shadow, x, y);
 
     const [frameX, frameY] = this.frame;
