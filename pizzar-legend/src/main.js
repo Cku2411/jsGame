@@ -15,9 +15,24 @@ window.OverworldMaps = {
         position: { x: utils.grid(5), y: utils.grid(6) },
         isPlayerControlled: true,
       }),
-      npc1: new GameObject({
-        position: { x: utils.grid(7), y: utils.grid(9) },
+      npc1: new Person({
+        position: { x: utils.grid(2), y: utils.grid(6) },
         Imgsrc: "./img/characters/people/npc1.png",
+        behaviorLoop: [
+          { type: "walk", direction: "left" },
+          { type: "stand", direction: "up", time: 800 },
+        ],
+      }),
+
+      npc2: new Person({
+        position: { x: utils.grid(8), y: utils.grid(9) },
+        Imgsrc: "./img/characters/people/npc3.png",
+        behaviorLoop: [
+          { type: "stand", direction: "left" },
+          { type: "stand", direction: "right", time: 1200 },
+          { type: "stand", direction: "up", time: 800 },
+          { type: "stand", direction: "up", time: 800 },
+        ],
       }),
     },
 
@@ -37,11 +52,11 @@ window.OverworldMaps = {
         position: { x: utils.grid(5), y: utils.grid(6) },
         isPlayerControlled: true,
       }),
-      npcA: new GameObject({
+      npcA: new Person({
         position: { x: utils.grid(7), y: utils.grid(9) },
         Imgsrc: "./img/characters/people/npc1.png",
       }),
-      npcB: new GameObject({
+      npcB: new Person({
         position: { x: utils.grid(8), y: utils.grid(7) },
         Imgsrc: "./img/characters/people/npc2.png",
       }),

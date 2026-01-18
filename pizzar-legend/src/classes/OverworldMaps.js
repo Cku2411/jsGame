@@ -22,7 +22,11 @@ export class OverworldMap {
   }
 
   getObjectReady() {
-    Object.values(this.gameObjects).forEach((obj) => {
+    Object.keys(this.gameObjects).forEach((key) => {
+      // instead of values, we select keys
+      let obj = this.gameObjects[key];
+      obj.id = key;
+
       // TODO: determent that this object is actually ready (mount)
       obj.ready(this);
     });
@@ -49,7 +53,7 @@ export class OverworldMap {
     ctx.drawImage(
       this.background,
       utils.grid(10.5) - cameraPerson.position.x,
-      utils.grid(6) - cameraPerson.position.y
+      utils.grid(6) - cameraPerson.position.y,
     );
   }
 
@@ -57,7 +61,7 @@ export class OverworldMap {
     ctx.drawImage(
       this.foreground,
       utils.grid(10.5) - cameraPerson.position.x,
-      utils.grid(6) - cameraPerson.position.y
+      utils.grid(6) - cameraPerson.position.y,
     );
   }
 }
