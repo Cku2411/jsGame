@@ -33,4 +33,12 @@ export const utils = {
     }
     return { x, y };
   },
+
+  emitEvent(name, detail) {
+    const event = new CustomEvent(name, {
+      detail: detail,
+    });
+
+    document.dispatchEvent(event);
+  },
 };

@@ -1,4 +1,5 @@
 import { utils } from "../util.js";
+import { OverWorldEvent } from "./OverWorldEvent.js";
 
 export class OverworldMap {
   constructor({ gameObjects, backgroundSrc, foregroundSrc, walls }) {
@@ -10,24 +11,40 @@ export class OverworldMap {
 
     this.foreground = new Image();
     this.foreground.src = foregroundSrc;
+
+    this.isCuttingScenePlaying = false;
+  }
+
+  async startCutscene(events) {
+    this.isCuttingScenePlaying = true;
+
+    // Start a loop of async events
+    for (let i = 0; i < events.length; i++) {
+      const eventHandler = new OverWorldEvent({
+        map: this,
+        eventConfig: events[i],
+      });
+
+      await eventHandler.init();
+    }
+
+    this.isCuttingScenePlaying = false;
+    console.log(this.isCuttingScenePlaying);
+
+    // Await each one
   }
 
   isSpaceTaken(currentX, currentY, direction) {
     const { x, y } = utils.nextPosition(currentX, currentY, direction);
 
     // rcheck if coordinate in wallmap
-    console.log(this.walls[`${x},${y}`] || false);
-
     return this.walls[`${x},${y}`] || false;
   }
 
   getObjectReady() {
     Object.keys(this.gameObjects).forEach((key) => {
-      // instead of values, we select keys
       let obj = this.gameObjects[key];
       obj.id = key;
-
-      // TODO: determent that this object is actually ready (mount)
       obj.ready(this);
     });
 

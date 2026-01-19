@@ -1,8 +1,9 @@
+import { utils } from "../util.js";
 import { GameObject } from "./GameObjects.js";
 
 export class Person extends GameObject {
   constructor({ position, isPlayerControlled, Imgsrc, behaviorLoop }) {
-    super({ position, Imgsrc });
+    super({ position, Imgsrc, behaviorLoop });
 
     this.isPlayerControlled = isPlayerControlled || false;
     this.movingProgressRemaining = 0; //1title
@@ -14,7 +15,7 @@ export class Person extends GameObject {
     };
   }
 
-  update(state) {
+  update({ direction, map }) {
     // if (this.isPlayerControlled) {
     if (this.movingProgressRemaining > 0) {
       this.updatePositon();
@@ -23,31 +24,48 @@ export class Person extends GameObject {
       //
 
       // Case: We're keyboard ready and have an arrow pressed
-      if (this.isPlayerControlled && state.direction) {
-        this.startAction(state, {
-          type: "walk",
-        });
+      if (!map.isCuttingScenePlaying && this.isPlayerControlled && direction) {
+        this.startAction(
+          { map },
+          {
+            type: "walk",
+            direction: direction,
+          },
+        );
       }
 
       // update animation
-      this.updateSprite(state);
+      this.updateSprite();
     }
     // }
   }
 
-  startAction(state, action) {
-    this.direction = state.direction;
+  startAction({ map }, action) {
+    this.direction = action.direction;
 
     if (action.type == "walk") {
       // stop here if space is not free
-      if (
-        state.map.isSpaceTaken(this.position.x, this.position.y, this.direction)
-      )
+      if (map.isSpaceTaken(this.position.x, this.position.y, this.direction)) {
+        // id NPC get stucked, retry ..
+        action.retry &&
+          setTimeout(() => {
+            this.startAction({ map }, action);
+          }, 100);
         return;
+      }
 
       // ready to walk
-      state.map.moveWall(this.position.x, this.position.y, this.direction);
+      map.moveWall(this.position.x, this.position.y, this.direction);
       this.movingProgressRemaining = 16;
+      this.updateSprite();
+    }
+
+    if (action.type == "stand") {
+      setTimeout(() => {
+        utils.emitEvent("PersonStandComplete", {
+          who: this.id,
+        });
+      }, action.timeOut);
     }
   }
 
@@ -55,6 +73,15 @@ export class Person extends GameObject {
     const [propety, change] = this.directionUpdate[this.direction];
     this.position[propety] += change;
     this.movingProgressRemaining -= 1;
+
+    // case for NPC
+    if (this.movingProgressRemaining === 0) {
+      // finish npc walk, emit the event
+
+      utils.emitEvent("PersonWalkingComplete", {
+        who: this.id,
+      });
+    }
   }
 
   updateSprite() {

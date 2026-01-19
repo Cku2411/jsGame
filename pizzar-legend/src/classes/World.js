@@ -25,6 +25,14 @@ export class World {
     this.input.init();
 
     this.startGameLoop();
+    this.map.startCutscene([
+      { who: "hero", type: "stand", direction: "down", timeOut: 2000 },
+      { who: "hero", type: "walk", direction: "down", timeOut: 0 },
+      { who: "hero", type: "walk", direction: "down", timeOut: 0 },
+      { who: "hero", type: "walk", direction: "down", timeOut: 0 },
+      { who: "npc2", type: "walk", direction: "left", timeOut: 0 },
+      { who: "npc2", type: "walk", direction: "left", timeOut: 0 },
+    ]);
   }
 
   startGameLoop() {
@@ -45,9 +53,12 @@ export class World {
 
       this.map.drawBackground(this.ctx, cameraPerson);
 
-      Object.values(this.map.gameObjects).forEach((obj) => {
-        obj.sprite.draw(this.ctx, cameraPerson);
-      });
+      // draw objects with ordered
+      Object.values(this.map.gameObjects)
+        .sort((a, b) => a.position.y - b.position.y)
+        .forEach((obj) => {
+          obj.sprite.draw(this.ctx, cameraPerson);
+        });
 
       this.map.drawForeground(this.ctx, cameraPerson);
       this.debug && this.drawGrid();
