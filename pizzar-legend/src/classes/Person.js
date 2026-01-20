@@ -5,6 +5,7 @@ export class Person extends GameObject {
   constructor({ position, isPlayerControlled, Imgsrc, behaviorLoop }) {
     super({ position, Imgsrc, behaviorLoop });
 
+    this.isStanding = false;
     this.isPlayerControlled = isPlayerControlled || false;
     this.movingProgressRemaining = 0; //1title
     this.directionUpdate = {
@@ -61,10 +62,12 @@ export class Person extends GameObject {
     }
 
     if (action.type == "stand") {
+      this.isStanding = true;
       setTimeout(() => {
         utils.emitEvent("PersonStandComplete", {
           who: this.id,
         });
+        this.isStanding = false;
       }, action.timeOut);
     }
   }

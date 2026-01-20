@@ -26,12 +26,15 @@ export class World {
 
     this.startGameLoop();
     this.map.startCutscene([
-      { who: "hero", type: "stand", direction: "down", timeOut: 2000 },
-      { who: "hero", type: "walk", direction: "down", timeOut: 0 },
-      { who: "hero", type: "walk", direction: "down", timeOut: 0 },
-      { who: "hero", type: "walk", direction: "down", timeOut: 0 },
-      { who: "npc2", type: "walk", direction: "left", timeOut: 0 },
-      { who: "npc2", type: "walk", direction: "left", timeOut: 0 },
+      { who: "hero", type: "stand", direction: "down", timeOut: 1000 },
+      { who: "hero", type: "walk", direction: "down", timeOut: 500 },
+      { who: "hero", type: "walk", direction: "down", timeOut: 500 },
+      { who: "hero", type: "stand", direction: "right", timeOut: 500 },
+      { who: "npc2", type: "walk", direction: "left", timeOut: 500 },
+      { who: "npc2", type: "walk", direction: "left", timeOut: 500 },
+      { who: "npc2", type: "walk", direction: "up", timeOut: 2000 },
+      { who: "npc2", type: "stand", direction: "left", timeOut: 500 },
+      { type: "textMessage", text: "HELLLOOOOOO" },
     ]);
   }
 

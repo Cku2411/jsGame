@@ -29,9 +29,8 @@ export class OverworldMap {
     }
 
     this.isCuttingScenePlaying = false;
-    console.log(this.isCuttingScenePlaying);
-
-    // Await each one
+    // Reset NPC
+    Object.values(this.gameObjects).forEach((obj) => obj.doBehaviorEvent(this));
   }
 
   isSpaceTaken(currentX, currentY, direction) {

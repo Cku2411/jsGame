@@ -36,8 +36,6 @@ export class DirectionInput {
     });
 
     document.addEventListener("keyup", (e) => {
-      e.preventDefault();
-
       const dir = this.keyMap[e.code];
       const index = this.heldDirections.indexOf(dir);
       if (index > -1) {

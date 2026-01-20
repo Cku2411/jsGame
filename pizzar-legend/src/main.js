@@ -1,5 +1,4 @@
 import { World } from "./classes/World.js";
-import { GameObject } from "./classes/GameObjects.js";
 import { Person } from "./classes/Person.js";
 import { utils } from "./util.js";
 

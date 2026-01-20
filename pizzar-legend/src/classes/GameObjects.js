@@ -37,7 +37,11 @@ export class GameObject {
   }
 
   async doBehaviorEvent(map) {
-    if (map.isCuttingScenePlaying || this.behaviorLoop.length == 0) {
+    if (
+      map.isCuttingScenePlaying ||
+      this.behaviorLoop.length == 0 ||
+      this.isStanding
+    ) {
       return;
     }
 
