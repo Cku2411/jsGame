@@ -1,3 +1,4 @@
+import { utils } from "../util.js";
 import { TextMessage } from "./TextMessage.js";
 
 export class OverWorldEvent {
@@ -52,6 +53,15 @@ export class OverWorldEvent {
   }
 
   textMessage(resolve) {
+    if (this.event.faceHero) {
+      // find the npc facehero
+      const obj = this.map.gameObjects[this.event.faceHero];
+      // change npc directon
+      obj.direction = utils.getFacingDirection(
+        this.map.gameObjects["hero"].direction,
+      );
+    }
+
     const message = new TextMessage({
       text: this.event.text,
       onComplete: () => resolve(),

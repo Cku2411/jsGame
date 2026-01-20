@@ -33,6 +33,31 @@ export class OverworldMap {
     Object.values(this.gameObjects).forEach((obj) => obj.doBehaviorEvent(this));
   }
 
+  checkForActionCutScene() {
+    // get heroposition
+    const hero = this.gameObjects["hero"];
+
+    // define any object near hero
+
+    const nextObjects = utils.nextPosition(
+      hero.position.x,
+      hero.position.y,
+      hero.direction,
+    );
+
+    // loop through all objects find any object at that position
+    const match = Object.values(this.gameObjects).find(
+      (obj) =>
+        `${obj.position.x},${obj.position.y}` ===
+        `${nextObjects.x},${nextObjects.y}`,
+    );
+
+    console.log({ match: match });
+    if (!this.isCuttingScenePlaying && match && match.talking.length) {
+      this.startCutscene(match.talking[0].events);
+    }
+  }
+
   isSpaceTaken(currentX, currentY, direction) {
     const { x, y } = utils.nextPosition(currentX, currentY, direction);
 

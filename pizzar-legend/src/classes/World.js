@@ -1,5 +1,6 @@
-import { COLS, ROWS, TILE_SIZE } from "../const.js";
+import { COLS, ROWS } from "../const.js";
 import { DirectionInput } from "./Input.js";
+import { KeyPressListener } from "./KeyPressListener.js";
 import { OverworldMap } from "./OverworldMaps.js";
 
 export class World {
@@ -9,6 +10,17 @@ export class World {
     this.ctx = this.canvas.getContext("2d");
     this.debug = false;
     this.map = null;
+  }
+
+  findActionInput() {
+    // press space to find someone to talk if near by hero
+    new KeyPressListener({
+      keycode: "Space",
+      callback: () => {
+        // is there any a person to talk to
+        this.map.checkForActionCutScene();
+      },
+    });
   }
 
   init(mapName) {
@@ -25,17 +37,19 @@ export class World {
     this.input.init();
 
     this.startGameLoop();
-    this.map.startCutscene([
-      { who: "hero", type: "stand", direction: "down", timeOut: 1000 },
-      { who: "hero", type: "walk", direction: "down", timeOut: 500 },
-      { who: "hero", type: "walk", direction: "down", timeOut: 500 },
-      { who: "hero", type: "stand", direction: "right", timeOut: 500 },
-      { who: "npc2", type: "walk", direction: "left", timeOut: 500 },
-      { who: "npc2", type: "walk", direction: "left", timeOut: 500 },
-      { who: "npc2", type: "walk", direction: "up", timeOut: 2000 },
-      { who: "npc2", type: "stand", direction: "left", timeOut: 500 },
-      { type: "textMessage", text: "HELLLOOOOOO" },
-    ]);
+
+    this.findActionInput();
+    // this.map.startCutscene([
+    //   { who: "hero", type: "stand", direction: "down", timeOut: 1000 },
+    //   { who: "hero", type: "walk", direction: "down", timeOut: 500 },
+    //   { who: "hero", type: "walk", direction: "down", timeOut: 500 },
+    //   { who: "hero", type: "stand", direction: "right", timeOut: 500 },
+    //   { who: "npc2", type: "walk", direction: "left", timeOut: 500 },
+    //   { who: "npc2", type: "walk", direction: "left", timeOut: 500 },
+    //   { who: "npc2", type: "walk", direction: "up", timeOut: 2000 },
+    //   { who: "npc2", type: "stand", direction: "left", timeOut: 500 },
+    //   { type: "textMessage", text: "HELLLOOOOOO" },
+    // ]);
   }
 
   startGameLoop() {

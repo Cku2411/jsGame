@@ -25,6 +25,14 @@ window.OverworldMaps = {
           { type: "walk", direction: "right" },
           { type: "walk", direction: "down" },
         ],
+        talking: [
+          {
+            events: [
+              { type: "textMessage", text: "Heloo!", faceHero: "npc1" },
+              { type: "textMessage", text: "is this me, you are looking for" },
+            ],
+          },
+        ],
       }),
 
       npc2: new Person({

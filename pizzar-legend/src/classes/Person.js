@@ -2,7 +2,7 @@ import { utils } from "../util.js";
 import { GameObject } from "./GameObjects.js";
 
 export class Person extends GameObject {
-  constructor({ position, isPlayerControlled, Imgsrc, behaviorLoop }) {
+  constructor({ position, isPlayerControlled, Imgsrc, behaviorLoop, talking }) {
     super({ position, Imgsrc, behaviorLoop });
 
     this.isStanding = false;
@@ -14,6 +14,8 @@ export class Person extends GameObject {
       left: ["x", -1],
       right: ["x", 1],
     };
+
+    this.talking = talking || [];
   }
 
   update({ direction, map }) {

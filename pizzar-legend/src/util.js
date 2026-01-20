@@ -41,4 +41,14 @@ export const utils = {
 
     document.dispatchEvent(event);
   },
+
+  getFacingDirection(direction) {
+    const opposites = {
+      left: "right",
+      right: "left",
+      up: "down",
+      down: "up",
+    };
+    return opposites[direction] || direction;
+  },
 };
