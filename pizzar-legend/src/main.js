@@ -3,8 +3,7 @@ import { Person } from "./classes/Person.js";
 import { utils } from "./util.js";
 
 // ==DEFINE WORLD
-let mapName = "DemoRoom";
-
+let mapName = "Kitchen";
 window.OverworldMaps = {
   DemoRoom: {
     backgroundLayer: "./img/maps/DemoLower.png",

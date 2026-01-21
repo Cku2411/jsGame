@@ -51,6 +51,9 @@ export class World {
     this.input.init();
 
     this.startGameLoop();
+    // this.map.startCutscene([
+    //   { type: "textMessage", text: "hello from the other side" },
+    // ]);
     this.cutSceneActionHandler();
   }
 
