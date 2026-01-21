@@ -27,6 +27,7 @@ export class Person extends GameObject {
       //
 
       // Case: We're keyboard ready and have an arrow pressed
+
       if (!map.isCuttingScenePlaying && this.isPlayerControlled && direction) {
         this.startAction(
           { map },

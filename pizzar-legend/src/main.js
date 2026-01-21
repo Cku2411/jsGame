@@ -15,15 +15,15 @@ window.OverworldMaps = {
         isPlayerControlled: true,
       }),
       npc1: new Person({
-        position: { x: utils.grid(2), y: utils.grid(6) },
+        position: { x: utils.grid(8), y: utils.grid(5) },
         Imgsrc: "./img/characters/people/npc1.png",
         behaviorLoop: [
-          { type: "walk", direction: "left" },
-          { type: "stand", direction: "up", timeOut: 800 },
-          { type: "walk", direction: "up" },
-          { type: "stand", direction: "up", timeOut: 800 },
-          { type: "walk", direction: "right" },
-          { type: "walk", direction: "down" },
+          // { type: "walk", direction: "left" },
+          // { type: "stand", direction: "up", timeOut: 800 },
+          // { type: "walk", direction: "up" },
+          // { type: "stand", direction: "up", timeOut: 800 },
+          // { type: "walk", direction: "right" },
+          // { type: "walk", direction: "down" },
         ],
         talking: [
           {
@@ -54,6 +54,31 @@ window.OverworldMaps = {
       [utils.gridCoord(8, 6)]: true,
       [utils.gridCoord(8, 7)]: true,
     },
+
+    cutSceneSpaces: {
+      // when hero enter this spot, cutscene happed!
+      [utils.gridCoord(7, 4)]: [
+        {
+          events: [
+            { who: "npc1", type: "walk", direction: "left", timeOut: 500 },
+            { who: "npc1", type: "stand", direction: "up", timeOut: 500 },
+            { type: "textMessage", text: "Hey, you can't get in there" },
+
+            { who: "hero", type: "stand", direction: "down", timeOut: 500 },
+            { type: "textMessage", text: "Why? okie!" },
+            { who: "npc1", type: "walk", direction: "right", timeOut: 500 },
+            { who: "npc1", type: "walk", direction: "right", timeOut: 500 },
+            { who: "hero", type: "walk", direction: "down", timeOut: 500 },
+          ],
+        },
+      ],
+
+      [utils.gridCoord(5, 10)]: [
+        {
+          events: [{ type: "changeMap", map: "Kitchen" }],
+        },
+      ],
+    },
   },
 
   Kitchen: {
@@ -71,10 +96,26 @@ window.OverworldMaps = {
       npcB: new Person({
         position: { x: utils.grid(8), y: utils.grid(7) },
         Imgsrc: "./img/characters/people/npc2.png",
+        talking: [
+          {
+            events: [
+              { type: "textMessage", text: "Heloo!", faceHero: "npcB" },
+              { type: "textMessage", text: "You made it" },
+            ],
+          },
+        ],
       }),
     },
 
     walls: {},
+
+    cutSceneSpaces: {
+      [utils.gridCoord(5, 10)]: [
+        {
+          events: [{ type: "changeMap", map: "DemoRoom" }],
+        },
+      ],
+    },
   },
 };
 
@@ -86,6 +127,6 @@ game.init(mapName);
 const button = document.getElementById("changeMap");
 const changeMap = () => {
   mapName = mapName == "DemoRoom" ? "Kitchen" : "DemoRoom";
-  game.init(mapName);
+  game.startMap(mapName);
 };
 button.addEventListener("click", changeMap);

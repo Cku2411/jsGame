@@ -22,6 +22,8 @@ export class DirectionInput {
 
   init() {
     document.addEventListener("keydown", (e) => {
+      // console.log(e.code);
+
       if (e.key == "Enter") {
         this.debug = true;
         return;

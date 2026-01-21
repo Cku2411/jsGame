@@ -2,7 +2,14 @@ import { utils } from "../util.js";
 import { OverWorldEvent } from "./OverWorldEvent.js";
 
 export class OverworldMap {
-  constructor({ gameObjects, backgroundSrc, foregroundSrc, walls }) {
+  constructor({
+    gameObjects,
+    backgroundSrc,
+    foregroundSrc,
+    walls,
+    cutSceneSpaces,
+  }) {
+    this.world = null;
     this.gameObjects = gameObjects;
     this.walls = walls;
 
@@ -13,6 +20,7 @@ export class OverworldMap {
     this.foreground.src = foregroundSrc;
 
     this.isCuttingScenePlaying = false;
+    this.cutSceneSpaces = cutSceneSpaces || {};
   }
 
   async startCutscene(events) {
@@ -31,6 +39,21 @@ export class OverworldMap {
     this.isCuttingScenePlaying = false;
     // Reset NPC
     Object.values(this.gameObjects).forEach((obj) => obj.doBehaviorEvent(this));
+  }
+
+  checkForCutsceneSpaces() {
+    // get heroposition
+    const hero = this.gameObjects["hero"];
+    const cutsceneSpotAtCurrentHeroPostion =
+      this.cutSceneSpaces[`${hero.position.x},${hero.position.y}`];
+
+    if (
+      !this.isCuttingScenePlaying &&
+      cutsceneSpotAtCurrentHeroPostion &&
+      cutsceneSpotAtCurrentHeroPostion.length
+    ) {
+      this.startCutscene(cutsceneSpotAtCurrentHeroPostion[0].events);
+    }
   }
 
   checkForActionCutScene() {
@@ -52,7 +75,6 @@ export class OverworldMap {
         `${nextObjects.x},${nextObjects.y}`,
     );
 
-    console.log({ match: match });
     if (!this.isCuttingScenePlaying && match && match.talking.length) {
       this.startCutscene(match.talking[0].events);
     }
