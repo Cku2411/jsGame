@@ -1,4 +1,5 @@
 import { utils } from "../util.js";
+import { SceneTransition } from "./SceneTransition.js";
 import { TextMessage } from "./TextMessage.js";
 
 export class OverWorldEvent {
@@ -73,10 +74,13 @@ export class OverWorldEvent {
   changeMap(resolve) {
     console.log("CHANGE MAP..");
     // 1. Gọi hiệu ứng chuyển cảnh (nếu có, ví dụ làm mờ màn hình)
+    const sceneTransition = new SceneTransition();
+    sceneTransition.init(document.querySelector(".game-container"));
+    sceneTransition.fadeOut();
 
     // 2. Gọi hàm startMap từ World instance
     // this.map là OverworldMap, this.map.world là World (đã gán ở World.js)
-    this.map.world.startMap(this.event.map);
+    // this.map.world.startMap(this.event.map);
 
     // 3. Resolve để kết thúc event hiện tại
     resolve();
