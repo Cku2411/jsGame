@@ -1,3 +1,4 @@
+import { Battle } from "../Battle/Battle.js";
 import { utils } from "../util.js";
 import { SceneTransition } from "./SceneTransition.js";
 import { TextMessage } from "./TextMessage.js";
@@ -6,6 +7,7 @@ export class OverWorldEvent {
   constructor({ map, eventConfig }) {
     this.map = map;
     this.event = eventConfig;
+    this.gameContainer = document.querySelector(".game-container");
   }
 
   //   event type
@@ -66,16 +68,28 @@ export class OverWorldEvent {
       onComplete: () => resolve(),
     });
 
-    message.init(document.querySelector(".game-container"));
+    message.init(this.gameContainer);
   }
 
   changeMap(resolve) {
     const sceneTransition = new SceneTransition();
-    sceneTransition.init(document.querySelector(".game-container"));
+    sceneTransition.init(this.gameContainer);
     sceneTransition.fadeOut();
 
     this.map.world.startMap(this.event.map);
     resolve();
+  }
+
+  battle(resolve) {
+    console.log("WELCOME TO THE BATTLE");
+
+    const battleField = new Battle({
+      onComplete: () => {
+        resolve();
+        console.log("DONE");
+      },
+    });
+    battleField.init(this.gameContainer);
   }
 
   init() {

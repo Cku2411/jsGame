@@ -1,0 +1,44 @@
+.Battle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  /* width: 100%;
+  height: 100%; */
+  background-image: url("/img/maps/DemoBattle.png");
+  background-size: cover;
+  image-rendering: pixelated;
+  /* background: white; */
+}
+
+.Battle_hero,
+.Battle_enemy {
+  position: absolute;
+  transform: scale(2);
+  width: 32px;
+  height: 32px;
+  overflow: hidden;
+  background: url("/img/characters/shadow.png");
+}
+
+.Battle_enemy img,
+.Battle_hero img {
+  pointer-events: none;
+}
+
+.Battle_hero img {
+  transform: translateY(-64px);
+}
+
+/* position
+ */
+.Battle_hero {
+  bottom: 57px;
+  left: 1px;
+}
+
+.Battle_enemy {
+  top: 42px;
+  right: -1px;
+}

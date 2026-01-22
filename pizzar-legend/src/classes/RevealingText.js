@@ -4,7 +4,7 @@ export class RevealingText {
     this.text = text;
     this.speed = textSpeed || 50;
 
-    // timeout that characer should reveal
+    // timeout that characer should reveali
     this.timeOut = null;
     this.isDone = false;
   }

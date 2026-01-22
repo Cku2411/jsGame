@@ -114,6 +114,12 @@ window.OverworldMaps = {
           events: [{ type: "changeMap", map: "DemoRoom" }],
         },
       ],
+
+      [utils.gridCoord(5, 7)]: [
+        {
+          events: [{ type: "battle", map: "Kitchen" }],
+        },
+      ],
     },
   },
 };
