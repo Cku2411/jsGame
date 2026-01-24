@@ -23,7 +23,7 @@ export class Battle {
       enemy1: new Combatant(
         {
           ...Pizzas.v001,
-          team: "enemy1",
+          team: "enemy",
           hp: 50,
           maxHp: 50,
           xp: 100,
@@ -36,7 +36,7 @@ export class Battle {
       enemy2: new Combatant(
         {
           ...Pizzas.f001,
-          team: "enemy2",
+          team: "enemy",
           hp: 50,
           maxHp: 50,
           xp: 100,
@@ -46,6 +46,11 @@ export class Battle {
         this,
       ),
     };
+  }
+
+  fight() {
+    this.combatants.player1.init(this.element);
+    this.combatants.enemy1.init(this.element);
   }
 
   createElement() {

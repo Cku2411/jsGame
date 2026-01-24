@@ -89,7 +89,9 @@ export class OverWorldEvent {
         console.log("DONE");
       },
     });
+
     battleField.init(this.gameContainer);
+    battleField.fight();
   }
 
   init() {
